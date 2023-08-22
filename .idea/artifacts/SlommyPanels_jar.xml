@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SlommyPanels:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SlommyPanels_jar</output-path>
+    <root id="archive" name="SlommyPanels.jar">
+      <element id="module-output" name="SlommyPanels" />
+    </root>
+  </artifact>
+</component>
