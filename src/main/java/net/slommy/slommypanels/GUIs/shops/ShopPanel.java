@@ -1,11 +1,15 @@
 package net.slommy.slommypanels.GUIs.shops;
 
+import net.kyori.adventure.text.Component;
 import net.slommy.essentials.SlommyItems.Items;
 import net.slommy.essentials.util.Msg;
+import net.slommy.essentials.util.SlommyItemExchange;
 import net.slommy.slommypanels.SlommyPanels;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import xyz.janboerman.guilib.api.menu.CloseButton;
 import xyz.janboerman.guilib.api.menu.ItemButton;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
@@ -48,6 +52,21 @@ public class ShopPanel {
                 }
             };
             panel.setButton(53, nextPageButton);
+        }
+
+        if (SlommyItemExchange.checkInventory(player, Items.items.get("items/money_printer")) >= 1) {
+            ItemStack moneyPrinter = Items.items.get("items/money_printer").build(player);
+            ItemMeta meta = moneyPrinter.getItemMeta();
+            meta.displayName(Msg.JSONcolor("&6Access Bank"));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Msg.JSONcolor("&7Feel so clean! Your Money Machine"));
+            lore.add(Msg.JSONcolor("&7allows you to access your Bank Account"));
+            lore.add(Msg.JSONcolor("&7while shopping!"));
+            lore.add(Msg.JSONcolor("&eClick to access Bank!"));
+            meta.lore(lore);
+            moneyPrinter.setItemMeta(meta);
+            ItemButton moneyPrinterButton = new ItemButton(moneyPrinter);
+            panel.setButton(50, moneyPrinterButton);
         }
 
         panel.setButton(49, new CloseButton<>(Items.items.get("gui/close").build(player)));
