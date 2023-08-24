@@ -3,7 +3,11 @@ package net.slommy.slommypanels.GUIs.shops;
 import net.kyori.adventure.text.Component;
 import net.slommy.essentials.SlommyItems.Items;
 import net.slommy.essentials.SlommyItems.SlommyItem;
+import net.slommy.essentials.util.GetInventoryValue;
 import net.slommy.essentials.util.Msg;
+import net.slommy.essentials.util.PlayerTrackerUtil;
+import net.slommy.essentials.util.SlommyItemExchange;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,62 +17,23 @@ import java.util.List;
 
 public class ShopItem {
     private SlommyItem item;
-    public enum ExchangeType {
-        BUY,
-        SELL,
-        TRADE
-    }
-    private ExchangeType exchangeType;
-    private int amount;
-    private SlommyItem tradeItem;
+
+    List<ShopExchange> exchanges;
     private String requirement;
     private String requirementMessage;
+    private int amount = 1;
 
-    public ShopItem(SlommyItem item, ExchangeType exchangeType, int amount) {
+    public ShopItem(SlommyItem item, List<ShopExchange> exchanges) {
         this.item = item;
-        this.exchangeType = exchangeType;
-        this.amount = amount;
-    }
-
-    public ShopItem(SlommyItem item, ExchangeType exchangeType, int amount, SlommyItem tradeItem) {
-        this.item = item;
-        this.exchangeType = exchangeType;
-        this.amount = amount;
-        if (exchangeType.equals(ExchangeType.TRADE)) {
-            this.tradeItem = tradeItem;
-        }
+        this.exchanges = exchanges;
     }
 
     public SlommyItem getItem() {
         return item;
     }
 
-    public ExchangeType getExchangeType() {
-        return exchangeType;
-    }
-
     public void setItem(SlommyItem item) {
         this.item = item;
-    }
-
-    public void setExchangeType(ExchangeType exchangeType) {
-        this.exchangeType = exchangeType;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public SlommyItem getTradeItem() {
-        return tradeItem;
-    }
-
-    public void setTradeItem(SlommyItem tradeItem) {
-        this.tradeItem = tradeItem;
     }
 
     public String getRequirement() {
@@ -87,15 +52,69 @@ public class ShopItem {
         this.requirementMessage = requirementMessage;
     }
 
-    public void exchange() {
-        if (exchangeType.equals(ExchangeType.BUY)) {
-
+    public void exchange(Player player) {
+        int exchangesValid = 0;
+        if (player.getInventory().firstEmpty() == -1) {
+            Msg.send(player, "&cYour inventory is full!");
+            player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 0);
+            return;
+        }
+        for (ShopExchange exchange : exchanges) {
+            if (exchange.type == ShopExchange.ExchangeType.BUY) {
+                double PlayerInventoryValue = GetInventoryValue.getInventoryValue(player);
+                long PlayerBankBalance = PlayerTrackerUtil.getPlayerTracker(player).player_bank_balance;
+                double playerTotalValue = PlayerInventoryValue + PlayerBankBalance;
+                if (playerTotalValue >= exchange.exchangeAmount) {
+                    exchangesValid++;
+                }
+            }
+            if (exchange.type == ShopExchange.ExchangeType.TRADE) {
+                if (SlommyItemExchange.checkInventory(player, exchange.tradeItem, exchange.exchangeAmount)) {
+                    exchangesValid++;
+                }
+            }
+        }
+        if (exchangesValid == exchanges.size()) {
+            Msg.send(player, "&aYou have purchased " + item.getDisplayName() + "&a!");
+            for (ShopExchange exchange1 : exchanges) {
+                if (exchange1.type == ShopExchange.ExchangeType.BUY) {
+                    if (GetInventoryValue.getInventoryValue(player) >= exchange1.exchangeAmount) {
+                        GetInventoryValue.takeInventoryValue(player, exchange1.exchangeAmount);
+                    } else {
+                        PlayerTrackerUtil.getPlayerTracker(player).player_bank_balance -= exchange1.exchangeAmount - GetInventoryValue.getInventoryValue(player);
+                        GetInventoryValue.takeInventoryValue(player, GetInventoryValue.getInventoryValue(player));
+                    }
+                }
+                if (exchange1.type == ShopExchange.ExchangeType.TRADE) {
+                    SlommyItemExchange.takeItems(player, exchange1.tradeItem, exchange1.exchangeAmount);
+                }
+            }
+            ItemStack item = this.item.build(player);
+            item.setAmount(amount);
+            player.getInventory().addItem(item);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 2);
+        } else {
+            Msg.send(player, "&cYou do not have enough to purchase this!");
+            player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 0);
         }
     }
 
     public ItemStack renderItem(Player player) {
         if (player.hasPermission(requirement)) {
-            return item.build(player);
+            ItemStack item = this.item.build(player);
+            item.setAmount(amount);
+            ItemMeta meta = item.getItemMeta();
+            List<Component> lore = meta.lore();
+            lore.add(Msg.JSONcolor("&7&l&m---------------------"));
+            lore.add(Msg.JSONcolor("&7Cost: "));
+            for (ShopExchange exchange : exchanges) {
+                lore.add(exchange.getDisplayLine());
+            }
+            lore.add(Msg.JSONcolor(""));
+            lore.add(Msg.JSONcolor("&eClick to purchase!"));
+            meta.lore(lore);
+            item.setItemMeta(meta);
+            return item;
         } else {
             ItemStack item = Items.items.get("gui/shop_not_unlocked").build(player);
             ItemMeta meta = item.getItemMeta();
@@ -105,5 +124,21 @@ public class ShopItem {
             item.setItemMeta(meta);
             return item;
         }
+    }
+
+    public List<ShopExchange> getExchanges() {
+        return exchanges;
+    }
+
+    public void setExchanges(List<ShopExchange> exchanges) {
+        this.exchanges = exchanges;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

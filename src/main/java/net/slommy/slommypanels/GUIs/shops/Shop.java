@@ -1,5 +1,8 @@
 package net.slommy.slommypanels.GUIs.shops;
 
+import org.bukkit.Bukkit;
+
+import java.io.File;
 import java.util.List;
 
 public class Shop {
@@ -14,13 +17,24 @@ public class Shop {
         this.title = title;
         for (int i = 0; i < items.size(); i++) {
             // split the items into pages of 28 items each
-            if (i % 28 == 0) {
+            if (i % 28 == 0 && i != 0) {
                 pages++;
             }
         }
     }
 
     public List<ShopItem> getItems() {
+        return items;
+    }
+
+    public List<ShopItem> getItems(int page) {
+        List<ShopItem> items = this.items;
+        if (page != 1) {
+            items = items.subList((page - 1) * 28, items.size());
+        }
+        if (items.size() > 28) {
+            items = items.subList(0, 28);
+        }
         return items;
     }
 
@@ -46,5 +60,31 @@ public class Shop {
 
     public int getSize() {
         return 54;
+    }
+
+    public static Shop getShop(String filePath) {
+        // check if the file exists
+        File file = new File(filePath);
+        if (!file.exists()) {
+            Bukkit.getLogger().warning("Shop file " + filePath + " does not exist");
+            return null;
+        }
+        return ShopYAMLManager.load(file);
+    }
+
+    public static String getShopPath() {
+        return Bukkit.getPluginsFolder() + "/SlommyPanels/shops/";
+    }
+
+    public static String getShopPath(String name) {
+        return getShopPath() + name + ".yml";
+    }
+
+    public int getPages() {
+        return pages;
+    }
+
+    public void setPages(int pages) {
+        this.pages = pages;
     }
 }

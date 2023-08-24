@@ -13,3 +13,6 @@ commands:
     description: Opens the Skills GUI
     usage: /skills
     permission: slommypanels.skills
+  shop:
+    description: Open a shop for a player
+    usage: /shop <player> <shop>

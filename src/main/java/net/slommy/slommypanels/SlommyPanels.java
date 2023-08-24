@@ -3,6 +3,7 @@ package net.slommy.slommypanels;
 
 import com.comphenix.protocol.ProtocolLib;
 import net.slommy.slommypanels.GUIs.SpOpenCommand;
+import net.slommy.slommypanels.cmds.shop;
 import net.slommy.slommypanels.cmds.skills;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.janboerman.guilib.GuiLibrary;
@@ -28,6 +29,7 @@ public final class SlommyPanels extends JavaPlugin {
         }
         getCommand("spopen").setExecutor(new SpOpenCommand());
         getCommand("skills").setExecutor(new skills());
+        getCommand("shop").setExecutor(new shop());
         this.guiLibrary = guiLibrary;
         this.instance = this;
     }
