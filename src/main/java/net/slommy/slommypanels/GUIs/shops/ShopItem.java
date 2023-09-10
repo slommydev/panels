@@ -7,6 +7,7 @@ import net.slommy.essentials.util.GetInventoryValue;
 import net.slommy.essentials.util.Msg;
 import net.slommy.essentials.util.PlayerTrackerUtil;
 import net.slommy.essentials.util.SlommyItemExchange;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,7 @@ public class ShopItem {
     private String requirement;
     private String requirementMessage;
     private int amount = 1;
+    private SlommyItem displayItem;
 
     public ShopItem(SlommyItem item, List<ShopExchange> exchanges) {
         this.item = item;
@@ -101,6 +103,9 @@ public class ShopItem {
 
     public ItemStack renderItem(Player player) {
         if (player.hasPermission(requirement)) {
+            if (displayItem == null) {
+                displayItem = item;
+            }
             ItemStack item = this.item.build(player);
             item.setAmount(amount);
             ItemMeta meta = item.getItemMeta();
@@ -114,8 +119,12 @@ public class ShopItem {
             lore.add(Msg.JSONcolor("&eClick to purchase!"));
             meta.lore(lore);
             item.setItemMeta(meta);
+            if (displayItem == Items.items.get("gui/nothing")) {
+                item = new ItemStack(Material.AIR);
+            }
             return item;
-        } else {
+        }
+        if (!player.hasPermission(requirement)) {
             ItemStack item = Items.items.get("gui/shop_not_unlocked").build(player);
             ItemMeta meta = item.getItemMeta();
             List<Component> lore = new ArrayList<>();
@@ -124,6 +133,7 @@ public class ShopItem {
             item.setItemMeta(meta);
             return item;
         }
+        return displayItem.build(player);
     }
 
     public List<ShopExchange> getExchanges() {
@@ -140,5 +150,13 @@ public class ShopItem {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public SlommyItem getDisplayItem() {
+        return displayItem;
+    }
+
+    public void setDisplayItem(SlommyItem displayItem) {
+        this.displayItem = displayItem;
     }
 }

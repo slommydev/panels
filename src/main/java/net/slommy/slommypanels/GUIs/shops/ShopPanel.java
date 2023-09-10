@@ -5,6 +5,7 @@ import net.slommy.essentials.SlommyItems.Items;
 import net.slommy.essentials.util.Msg;
 import net.slommy.essentials.util.SlommyItemExchange;
 import net.slommy.slommypanels.SlommyPanels;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -82,8 +83,11 @@ public class ShopPanel {
                 @Override
                 public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                     if (player.hasPermission(shopItem.getRequirement())) {
+                        if (shopItem.getDisplayItem() == Items.items.get("gui/nothing")) {
+                            return;
+                        }
                         shopItem.exchange(player);
-                    } else {
+                    } else if (!player.hasPermission(shopItem.getRequirement())) {
                         Msg.send(player, "&cYou have not unlocked this item.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 0);
                     }

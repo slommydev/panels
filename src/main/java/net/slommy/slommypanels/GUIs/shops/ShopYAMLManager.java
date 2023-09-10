@@ -26,6 +26,9 @@ public class ShopYAMLManager {
         for (String key : items.getKeys(false)) {
             ConfigurationSection item = items.getConfigurationSection(key);
             String itemKey = item.getString("item");
+            if (itemKey == null) {
+                itemKey = "gui/null_item_field";
+            }
             List<ShopExchange> exchanges = new ArrayList<>();
             ConfigurationSection exchangeSection = item.getConfigurationSection("exchanges");
             for (String exchange : exchangeSection.getKeys(false)) {
@@ -52,6 +55,9 @@ public class ShopYAMLManager {
             }
             if (item.contains("amount")) {
                 shopItem.setAmount(item.getInt("amount"));
+            }
+            if (item.contains("display-item")) {
+                shopItem.setDisplayItem(Items.items.get(item.getString("display-item")));
             }
             shopItems.add(shopItem);
         }
