@@ -1,5 +1,10 @@
 package net.slommy.slommypanels.GUIs;
 
+import net.kyori.adventure.text.TextComponent;
+import net.slommy.essentials.SlommyItems.SlommyItem;
+import net.slommy.essentials.util.Msg;
+import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
+import net.slommy.slommypanels.GUIs.lootbags.LootTable;
 import net.slommy.slommypanels.GUIs.skills.AllSkillsPanel;
 import net.slommy.slommypanels.GUIs.skills.IndividualSkillPanel;
 import net.slommy.slommypanels.SlommyPanels;
@@ -8,6 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
 
 import java.util.ArrayList;
@@ -42,6 +48,10 @@ public class SpOpenCommand implements CommandExecutor {
         if (args[0].equalsIgnoreCase("skilltest")) {
             MenuHolder<SlommyPanels> panel = IndividualSkillPanel.open(player, "Fishing");
             player.openInventory(panel.getInventory());
+        }
+
+        if (args[0].equalsIgnoreCase("testbag")) {
+            GlobalLootbagManagers.getBag("atlas").openTreasureBag(player);
         }
 
 

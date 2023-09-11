@@ -3,8 +3,12 @@ package net.slommy.slommypanels;
 
 import com.comphenix.protocol.ProtocolLib;
 import net.slommy.slommypanels.GUIs.SpOpenCommand;
+import net.slommy.slommypanels.GUIs.lootbags.LootTableLoader;
+import net.slommy.slommypanels.GUIs.lootbags.TreasureBagLoader;
+import net.slommy.slommypanels.cmds.AddTreasureBag;
 import net.slommy.slommypanels.cmds.shop;
 import net.slommy.slommypanels.cmds.skills;
+import net.slommy.slommypanels.cmds.stash;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.janboerman.guilib.GuiLibrary;
 
@@ -30,7 +34,11 @@ public final class SlommyPanels extends JavaPlugin {
         getCommand("spopen").setExecutor(new SpOpenCommand());
         getCommand("skills").setExecutor(new skills());
         getCommand("shop").setExecutor(new shop());
+        getCommand("stash").setExecutor(new stash());
+        getCommand("addtreasurebag").setExecutor(new AddTreasureBag());
         this.guiLibrary = guiLibrary;
+        LootTableLoader.loadLootTables();
+        TreasureBagLoader.loadBags();
         this.instance = this;
     }
 

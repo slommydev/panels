@@ -16,3 +16,10 @@ commands:
   shop:
     description: Open a shop for a player
     usage: /shop <player> <shop>
+  stash:
+    description: Open your Treasure Stash
+    usage: /stash
+  addtreasurebag:
+    description: Add a Treasure Bag to your Treasure Stash
+    usage: /addtreasurebag <player> <bag> <amount>
+    permission: slommypanels.addtreasurebag
