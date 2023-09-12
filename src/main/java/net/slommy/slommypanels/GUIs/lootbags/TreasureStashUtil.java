@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TreasureStashUtil {
-    public static Map<String, TreasureStash> treasureStash = new HashMap<>();
+    private static Map<String, TreasureStash> treasureStash = new HashMap<>();
 
     public static TreasureStash getTreasureStash(Player p) {
         if (!treasureStash.containsKey(p.getUniqueId().toString())) {
@@ -24,7 +24,7 @@ public class TreasureStashUtil {
         treasureStash.put(p.getUniqueId().toString(), data);
     }
 
-    private static File getFile(Player p) {
+    public static File getFile(Player p) {
         return new File(Bukkit.getPluginsFolder().getAbsolutePath() + "/SlommyEssentials/player/" + p.getUniqueId() + "/treasurestash.yml");
     }
 }

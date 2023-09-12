@@ -3,6 +3,7 @@ package net.slommy.slommypanels.cmds;
 import net.slommy.slommypanels.GUIs.lootbags.TreasureStash;
 import net.slommy.slommypanels.GUIs.lootbags.TreasureStashUtil;
 import net.slommy.slommypanels.SlommyPanels;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,7 @@ public class stash implements CommandExecutor {
         TreasureStash stash = TreasureStashUtil.getTreasureStash(player);
         MenuHolder<SlommyPanels> panel = stash.getStashMenu(1);
         player.openInventory(panel.getInventory());
+        player.playSound(player.getLocation(), Sound.ENTITY_HORSE_SADDLE, 1, 0);
         return true;
     }
 }

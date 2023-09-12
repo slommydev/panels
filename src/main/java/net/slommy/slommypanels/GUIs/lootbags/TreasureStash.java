@@ -29,6 +29,7 @@ public class TreasureStash {
     public TreasureStash(Player player, File file) {
         this.player = player;
         this.file = file;
+        loadData();
     }
 
     public void loadData() {
@@ -86,6 +87,15 @@ public class TreasureStash {
             bags.put(bag, bags.get(bag) - 1);
             bag.openTreasureBag(player);
         }
+    }
+
+    public int getBagAmount(String bagName) {
+        for (TreasureBag bag : bags.keySet()) {
+            if (bag.getName().equals(bagName)) {
+                return bags.get(bag);
+            }
+        }
+        return 0;
     }
 
     public MenuHolder<SlommyPanels> getStashMenu(int page) {
@@ -175,6 +185,7 @@ public class TreasureStash {
                 ItemButton bagButton = new ItemButton(bagItem) {
                     @Override
                     public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
+                        player.closeInventory();
                         useBag(bag);
                     }
                 };

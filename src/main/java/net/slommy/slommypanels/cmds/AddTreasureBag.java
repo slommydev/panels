@@ -8,7 +8,9 @@ import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
 import net.slommy.slommypanels.GUIs.lootbags.TreasureBag;
 import net.slommy.slommypanels.GUIs.lootbags.TreasureStash;
 import net.slommy.slommypanels.GUIs.lootbags.TreasureStashUtil;
+import net.slommy.slommypanels.SlommyPanels;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -40,6 +42,24 @@ public class AddTreasureBag implements TabExecutor {
         TextComponent msg = Msg.JSONcolor("&7Check your &6/stash&7! &8(or click this message)");
         msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/stash"));
         msg = msg.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Msg.JSONcolor("&7Click to open your stash!")));
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.84f);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1.12f);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.56f);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.42f);
+        // after 2 ticks, play the sound again
+        Bukkit.getScheduler().runTaskLater(SlommyPanels.getInstance(), () -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.84f);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1.12f);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.56f);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.71f);
+        }, 5);
+        // after 4 ticks, play the sound for the last time
+        Bukkit.getScheduler().runTaskLater(SlommyPanels.getInstance(), () -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.84f);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1.12f);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.56f);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.71f);
+        }, 10);
         player.sendMessage(msg);
         return true;
     }

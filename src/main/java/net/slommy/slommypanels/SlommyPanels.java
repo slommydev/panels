@@ -4,11 +4,14 @@ package net.slommy.slommypanels;
 import com.comphenix.protocol.ProtocolLib;
 import net.slommy.slommypanels.GUIs.SpOpenCommand;
 import net.slommy.slommypanels.GUIs.lootbags.LootTableLoader;
+import net.slommy.slommypanels.GUIs.lootbags.TreasureBag;
+import net.slommy.slommypanels.GUIs.lootbags.TreasureBagCloseEvent;
 import net.slommy.slommypanels.GUIs.lootbags.TreasureBagLoader;
 import net.slommy.slommypanels.cmds.AddTreasureBag;
 import net.slommy.slommypanels.cmds.shop;
 import net.slommy.slommypanels.cmds.skills;
 import net.slommy.slommypanels.cmds.stash;
+import net.slommy.slommypanels.events.LoadStuffOnJoin;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.janboerman.guilib.GuiLibrary;
 
@@ -36,6 +39,10 @@ public final class SlommyPanels extends JavaPlugin {
         getCommand("shop").setExecutor(new shop());
         getCommand("stash").setExecutor(new stash());
         getCommand("addtreasurebag").setExecutor(new AddTreasureBag());
+
+        getServer().getPluginManager().registerEvents(new TreasureBagCloseEvent(), this);
+        getServer().getPluginManager().registerEvents(new LoadStuffOnJoin(), this);
+
         this.guiLibrary = guiLibrary;
         LootTableLoader.loadLootTables();
         TreasureBagLoader.loadBags();

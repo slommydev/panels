@@ -69,15 +69,25 @@ public class LootTable {
         // generate a list of drops for the player to get
         List<LootItem> drops = new ArrayList<>();
         for (int i = 0; i < mainDropAmount; i++) {
-            LootItem item = getDrop(mainDrops);
-            if (item != null) {
-                drops.add(item);
+            try {
+                LootItem item = getDrop(mainDrops);
+                if (item != null) {
+                    drops.add(item);
+                }
+            }
+            catch (Exception e) {
+                Bukkit.getLogger().warning("Could not get main drop for loot table " + name);
             }
         }
         for (int i = 0; i < secondaryDropAmount; i++) {
-            LootItem item = getDrop(secondaryDrops);
-            if (item != null) {
-                drops.add(item);
+            try {
+                LootItem item = getDrop(secondaryDrops);
+                if (item != null) {
+                    drops.add(item);
+                }
+            }
+            catch (Exception e) {
+                Bukkit.getLogger().warning("Could not get secondary drop for loot table " + name);
             }
         }
         return drops;

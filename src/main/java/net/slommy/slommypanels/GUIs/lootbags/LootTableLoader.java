@@ -33,7 +33,7 @@ public class LootTableLoader {
                     if (amount == 0) {
                         amount = 1;
                     }
-                    LootItem lootItem = new LootItem(slommyItem, amount);
+                    LootItem lootItem = new LootItem(slommyItem, amount, itemKey);
                     mainDropsMap.put(lootItem, chance);
                 }
                 for (String key : secondaryDrops.getKeys(false)) {
@@ -48,7 +48,7 @@ public class LootTableLoader {
                     if (amount == 0) {
                         amount = 1;
                     }
-                    LootItem lootItem = new LootItem(slommyItem, amount);
+                    LootItem lootItem = new LootItem(slommyItem, amount, itemKey);
                     secondaryDropsMap.put(lootItem, chance);
                     Bukkit.getLogger().info("Loaded secondary drop " + slommyItem.getDisplayName() + " with chance " + chance);
                 }
