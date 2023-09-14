@@ -22,12 +22,7 @@ public class LockPicker {
     }
 
     public void use(Player player, TreasureBag bag) {
-        Inventory playerInventory = player.getInventory();
         ItemStack item = this.item.build(player);
-        if (playerInventory.containsAtLeast(item, 1)) {
-            // remove one of the item from the player's inventory
-            playerInventory.removeItem(item);
-            bag.openTreasureBag(player);
-        }
+
     }
 }
