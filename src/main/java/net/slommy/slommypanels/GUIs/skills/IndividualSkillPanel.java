@@ -15,19 +15,14 @@ import net.slommy.essentials.util.RomanNumeral;
 import net.slommy.slommypanels.SlommyPanels;
 import net.slommy.essentials.util.ProgressBar;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.api.menu.ItemButton;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
-import xyz.janboerman.guilib.api.menu.ToggleButton;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
