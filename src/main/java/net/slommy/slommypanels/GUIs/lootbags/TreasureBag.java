@@ -75,20 +75,19 @@ public class TreasureBag implements InventoryHolder {
         this.lockpickAllowed.put(player.getName(), true);
 
         // Fill inventory with items from loot table
-        List<LootItem> drops = lootTable.getListOfDrops();
+        List<LootItem> drops = lootTable.getListOfDrops(player);
         List<Integer> takenSlots = new ArrayList<>();
         for (LootItem drop : drops) {
             int slot = (int) (Math.random() * 27);
             while (takenSlots.contains(slot)) {
                 slot = (int) (Math.random() * 27);
             }
-            if (lootTable.getMainDrops().containsKey(drop)) {
-                if (lootTable.getMainDrops().get(drop) < 0.01) {
-                    // broadcast to server
-                    List<Player> onlinePlayers = new ArrayList<>(SlommyPanels.getInstance().getServer().getOnlinePlayers());
-                    for (Player onlinePlayer : onlinePlayers) {
-                        Msg.send(onlinePlayer, "&d&lWOAH! &b" + player.getName() + " &ejust got a &d" + drop.getSlommyItem().getDisplayName() + "&e from a " + item.getDisplayName() + "&e!");
-                    }
+            if (LootTable.Rarity.getRarityByChance(lootTable.getChance(drop)) == LootTable.Rarity.EXTREMELY_RARE || LootTable.Rarity.getRarityByChance(lootTable.getChance(drop)) == LootTable.Rarity.CRAZY_RARE || LootTable.Rarity.getRarityByChance(lootTable.getChance(drop)) == LootTable.Rarity.INDUBITABLY_RARE) {
+                // broadcast to server
+                LootTable.Rarity rarity = LootTable.Rarity.getRarityByChance(lootTable.getChance(drop));
+                List<Player> onlinePlayers = new ArrayList<>(SlommyPanels.getInstance().getServer().getOnlinePlayers());
+                for (Player onlinePlayer : onlinePlayers) {
+                    Msg.send(onlinePlayer, LootTable.Rarity.getRarityString(rarity) + "! &b" + player.getName() + " &ejust got a &d" + drop.getSlommyItem().getDisplayName() + "&e from a " + item.getDisplayName() + "&e!");
                 }
             }
             try {
@@ -182,19 +181,49 @@ public class TreasureBag implements InventoryHolder {
         }
 
         List<LootItem> drops = getAllDrops();
-        // sort drops by whether they are a main drop or a secondary drop, then by rarity (rarest to most common)
+        // sort drops by whether they are a main drop or a secondary drop, then by drop chance (rarest to least rare), then alphabetically by item category, then alphabetically by item name
         drops.sort((o1, o2) -> {
             if (lootTable.getMainDrops().containsKey(o1) && !lootTable.getMainDrops().containsKey(o2)) {
                 return -1;
-            } else if (!lootTable.getMainDrops().containsKey(o1) && lootTable.getMainDrops().containsKey(o2)) {
-                return 1;
-            } else {
-                double chance1 = lootTable.getChance(o1) / 100;
-                double chance2 = lootTable.getChance(o2) / 100;
-                LootTable.Rarity rarity1 = LootTable.Rarity.getRarityByChance(chance1);
-                LootTable.Rarity rarity2 = LootTable.Rarity.getRarityByChance(chance2);
-                return rarity2.compareTo(rarity1);
             }
+            if (!lootTable.getMainDrops().containsKey(o1) && lootTable.getMainDrops().containsKey(o2)) {
+                return 1;
+            }
+            if (lootTable.getMainDrops().containsKey(o1) && lootTable.getMainDrops().containsKey(o2)) {
+                if (lootTable.getChance(o1) < lootTable.getChance(o2)) {
+                    return -1;
+                }
+                if (lootTable.getChance(o1) > lootTable.getChance(o2)) {
+                    return 1;
+                }
+            }
+            if (lootTable.getSecondaryDrops().containsKey(o1) && !lootTable.getSecondaryDrops().containsKey(o2)) {
+                return -1;
+            }
+            if (!lootTable.getSecondaryDrops().containsKey(o1) && lootTable.getSecondaryDrops().containsKey(o2)) {
+                return 1;
+            }
+            if (lootTable.getSecondaryDrops().containsKey(o1) && lootTable.getSecondaryDrops().containsKey(o2)) {
+                if (lootTable.getChance(o1) < lootTable.getChance(o2)) {
+                    return -1;
+                }
+                if (lootTable.getChance(o1) > lootTable.getChance(o2)) {
+                    return 1;
+                }
+            }
+            if (o1.getSlommyItem().getItemCategory().compareTo(o2.getSlommyItem().getItemCategory()) < 0) {
+                return -1;
+            }
+            if (o1.getSlommyItem().getItemCategory().compareTo(o2.getSlommyItem().getItemCategory()) > 0) {
+                return 1;
+            }
+            if (o1.getSlommyItem().getItemID().compareTo(o2.getSlommyItem().getItemID()) < 0) {
+                return -1;
+            }
+            if (o1.getSlommyItem().getItemID().compareTo(o2.getSlommyItem().getItemID()) > 0) {
+                return 1;
+            }
+            return 0;
         });
 
         int pages = (int) Math.ceil(drops.size() / 27.0);
@@ -239,10 +268,13 @@ public class TreasureBag implements InventoryHolder {
             } else {
                 lore.add(Msg.JSONcolor("&7Secondary Drop"));
             }
-            double chance = lootTable.getChance(item) / 100;
+            double chance = lootTable.getChance(item);
             DecimalFormat df = new DecimalFormat("#.##");
             LootTable.Rarity rarity = LootTable.Rarity.getRarityByChance(chance);
             lore.add(Msg.JSONcolor(LootTable.Rarity.getRarityString(rarity)));
+            if (player.hasPermission("dev.true")) {
+                lore.add(Msg.JSONcolor("&8(Admin Only) Drop Chance: " + df.format(chance * 100) + "%"));
+            }
             meta.lore(lore);
             itemStack.setItemMeta(meta);
             itemStack.setAmount(item.getAmount());
