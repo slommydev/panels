@@ -51,7 +51,7 @@ public class SpOpenCommand implements CommandExecutor {
         }
 
         if (args[0].equalsIgnoreCase("testbag")) {
-            GlobalLootbagManagers.getBag("atlas").openTreasureBag(player);
+            GlobalLootbagManagers.getBag("testbag").openTreasureBag(player);
         }
 
 
