@@ -16,13 +16,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TreasureBag implements InventoryHolder {
     private SlommyItem item;
     private String name;
     private String displayName;
     private LootTable lootTable;
+    private LockPicker lockPicker;
+    public Map<String, Boolean> lockpickAllowed = new HashMap<>();
 
     public TreasureBag(SlommyItem item, String name, String displayName, LootTable lootTable) {
         this.item = item;
@@ -65,6 +69,7 @@ public class TreasureBag implements InventoryHolder {
 
     public void openTreasureBag(Player player) {
         Inventory inventory = SlommyPanels.getInstance().getServer().createInventory(this,36, Msg.JSONcolor(displayName));
+        this.lockpickAllowed.put(player.getName(), true);
 
         // Fill inventory with items from loot table
         List<LootItem> drops = lootTable.getListOfDrops();
@@ -134,9 +139,28 @@ public class TreasureBag implements InventoryHolder {
             bag.setItemMeta(meta2);
             inventory.setItem(33, bag);
         }
-
+        if (this.lockPicker != null) {
+            if (stash.getLockpickAmount(this.lockPicker.getName()) > 0) {
+                ItemStack lockpick = this.lockPicker.getItem().build(player);
+                ItemMeta meta2 = lockpick.getItemMeta();
+                List<Component> lore2 = new ArrayList<>();
+                lore2.add(Msg.JSONcolor("&7You have &e" + stash.getLockpickAmount(this.lockPicker.getName()) + " &7left."));
+                lore2.add(Msg.JSONcolor("&eClick to use a lockpick!"));
+                meta2.lore(lore2);
+                lockpick.setItemMeta(meta2);
+                inventory.setItem(30, lockpick);
+            }
+        }
         player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 1, 2f);
         player.openInventory(inventory);
+    }
+
+    public LockPicker getLockPicker() {
+        return lockPicker;
+    }
+
+    public void setLockPicker(LockPicker lockPicker) {
+        this.lockPicker = lockPicker;
     }
 
     @Override

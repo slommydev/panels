@@ -1,6 +1,7 @@
 package net.slommy.slommypanels.GUIs.lootbags;
 
 import net.slommy.essentials.PlayerStats.skills.PlayerSkills;
+import net.slommy.essentials.SlommyItems.Items;
 import net.slommy.essentials.util.GetSlommyItem;
 import net.slommy.essentials.util.Msg;
 import net.slommy.essentials.util.PlayerDataUtil;
@@ -13,6 +14,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Objects;
 
 public class TreasureBagCloseEvent implements Listener {
@@ -20,10 +22,12 @@ public class TreasureBagCloseEvent implements Listener {
     public void onBagClose(InventoryCloseEvent event) {
         if (event.getInventory().getHolder() instanceof TreasureBag) {
             Inventory inv = event.getInventory();
+            TreasureBag bag = GlobalLootbagManagers.getBag(((TreasureBag) event.getInventory().getHolder()).getName());
+            bag.lockpickAllowed.put(event.getPlayer().getName(), true);
             for (int i = 0; i < inv.getSize(); i++) {
                 if (inv.getItem(i) != null) {
                     String itemID = GetSlommyItem.getFromItemTag(inv.getItem(i));
-                    if (itemID.split("/")[0].equalsIgnoreCase("clickables") || itemID.split("/")[0].equalsIgnoreCase("gui") || itemID.split("/")[0].equalsIgnoreCase("bags")) {
+                    if (itemID.split("/")[0].equalsIgnoreCase("clickables") || itemID.split("/")[0].equalsIgnoreCase("gui") || itemID.split("/")[0].equalsIgnoreCase("bags") || itemID.split("/")[0].equalsIgnoreCase("lockpicks")) {
                         if (itemID.split("/")[0].equalsIgnoreCase("clickables")) {
                             runClickableItem(inv.getItem(i), (Player) event.getPlayer());
                         }
@@ -43,13 +47,17 @@ public class TreasureBagCloseEvent implements Listener {
                 return;
             }
             String itemID = GetSlommyItem.getFromItemTag(event.getCurrentItem());
-            if (itemID.split("/")[0].equalsIgnoreCase("clickables") || itemID.split("/")[0].equalsIgnoreCase("gui") || itemID.split("/")[0].equalsIgnoreCase("bags")) {
+            if (itemID.split("/")[0].equalsIgnoreCase("clickables") || itemID.split("/")[0].equalsIgnoreCase("gui") || itemID.split("/")[0].equalsIgnoreCase("bags") || itemID.split("/")[0].equalsIgnoreCase("lockpicks")) {
                 event.setCancelled(true);
 
                 if (itemID.split("/")[0].equalsIgnoreCase("clickables")) {
                     runClickableItem(event.getCurrentItem(), (Player) event.getWhoClicked());
                     // remove the item from the inventory
                     event.getInventory().setItem(event.getSlot(), null);
+                    TreasureBag bag = GlobalLootbagManagers.getBag(((TreasureBag) event.getInventory().getHolder()).getName());
+                    bag.lockpickAllowed.put(event.getWhoClicked().getName(), false);
+                    Player player = (Player) event.getWhoClicked();
+                    event.getInventory().setItem(30, Items.items.get("gui/blank_pane").build(player));
                 }
                 if (itemID.split("/")[0].equalsIgnoreCase("gui")) {
                     if (itemID.split("/")[1].equalsIgnoreCase("close")) {
@@ -70,6 +78,39 @@ public class TreasureBagCloseEvent implements Listener {
                         stash.useBag(bag);
                     }
                 }
+                if (itemID.split("/")[0].equalsIgnoreCase("lockpicks")) {
+                    TreasureBag bag = GlobalLootbagManagers.getBag(((TreasureBag) event.getInventory().getHolder()).getName());
+                    TreasureStash stash = TreasureStashUtil.getTreasureStash((Player) event.getWhoClicked());
+                    LockPicker picker = bag.getLockPicker();
+                    if (picker == null) {
+                        return;
+                    }
+                    if (stash.getLockpickAmount(picker.getName()) <= 0) {
+                        Msg.send((Player) event.getWhoClicked(), "&cYou don't have any " + picker.getName() + "s!");
+                        Msg.send((Player) event.getWhoClicked(), "&cCHEATING CHEATER!! >:(");
+                        return;
+                    }
+                    if (bag.lockpickAllowed.get(event.getWhoClicked().getName()) == null) {
+                        return;
+                    }
+                    if (!bag.lockpickAllowed.get(event.getWhoClicked().getName())) {
+                        return;
+                    }
+                    Player player = (Player) event.getWhoClicked();
+                    // remove all items from the first 27 slots
+                    for (int i = 0; i < 27; i++) {
+                        if (event.getInventory().getItem(i) != null) {
+                            event.getInventory().setItem(i, null);
+                        }
+                    }
+                    stash.useLockpick(picker);
+                    bag.openTreasureBag(player);
+                }
+            } else {
+                TreasureBag bag = GlobalLootbagManagers.getBag(((TreasureBag) event.getInventory().getHolder()).getName());
+                bag.lockpickAllowed.put(event.getWhoClicked().getName(), false);
+                Player player = (Player) event.getWhoClicked();
+                event.getInventory().setItem(30, Items.items.get("gui/blank_pane").build(player));
             }
         }
     }

@@ -29,6 +29,15 @@ public class TreasureBagLoader {
                     continue;
                 }
                 TreasureBag bag = new TreasureBag(item, name, displayName, table);
+                if (cfg.contains("lockpicker")) {
+                    String lockpicker = cfg.getString("lockpicker");
+                    LockPicker picker = GlobalLootbagManagers.getLockPicker(lockpicker);
+                    if (picker == null) {
+                        Bukkit.getLogger().warning("Could not load treasure bag " + name + " because its lockpicker does not exist.");
+                        continue;
+                    }
+                    bag.setLockPicker(picker);
+                }
                 GlobalLootbagManagers.bags.add(bag);
             }
         }

@@ -21,8 +21,4 @@ public class LockPicker {
         return item;
     }
 
-    public void use(Player player, TreasureBag bag) {
-        ItemStack item = this.item.build(player);
-
-    }
 }

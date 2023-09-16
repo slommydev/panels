@@ -2,6 +2,7 @@ package net.slommy.slommypanels.GUIs.lootbags;
 
 import net.kyori.adventure.text.Component;
 import net.slommy.essentials.SlommyItems.Items;
+import net.slommy.essentials.util.IntegerCommaParser;
 import net.slommy.essentials.util.Msg;
 import net.slommy.slommypanels.SlommyPanels;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class TreasureStash {
     private Player player;
     private Map<TreasureBag, Integer> bags = new HashMap<>();
+    private Map<LockPicker, Integer> lockpicks = new HashMap<>();
     private File file;
 
     public TreasureStash(Player player, File file) {
@@ -53,6 +55,25 @@ public class TreasureStash {
                 bags.put(bag, 0);
             }
         }
+        ConfigurationSection lockpicksSection = cfg.getConfigurationSection("lockpicks");
+        if (lockpicksSection == null) {
+            cfg.createSection("lockpicks");
+            try {
+                cfg.save(file);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        lockpicksSection = cfg.getConfigurationSection("lockpicks");
+        for (LockPicker lockPicker : GlobalLootbagManagers.lockpicks) {
+            if (lockpicksSection.contains(lockPicker.getName())) {
+                lockpicks.put(lockPicker, lockpicksSection.getInt(lockPicker.getName()));
+            }
+            else {
+                lockpicks.put(lockPicker, 0);
+            }
+        }
     }
 
     public void save() {
@@ -71,6 +92,20 @@ public class TreasureStash {
         catch (Exception e) {
             e.printStackTrace();
         }
+        ConfigurationSection lockpicksSection = cfg.getConfigurationSection("lockpicks");
+        if (lockpicksSection == null) {
+            cfg.createSection("lockpicks");
+        }
+        lockpicksSection = cfg.getConfigurationSection("lockpicks");
+        for (LockPicker lockPicker : lockpicks.keySet()) {
+            lockpicksSection.set(lockPicker.getName(), lockpicks.get(lockPicker));
+        }
+        try {
+            cfg.save(file);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void giveBag(TreasureBag bag, int amount) {
@@ -79,6 +114,15 @@ public class TreasureStash {
         }
         else {
             bags.put(bag, amount);
+        }
+    }
+
+    public void giveLockpicker(LockPicker lockPicker, int amount) {
+        if (lockpicks.containsKey(lockPicker)) {
+            lockpicks.put(lockPicker, lockpicks.get(lockPicker) + amount);
+        }
+        else {
+            lockpicks.put(lockPicker, amount);
         }
     }
 
@@ -96,6 +140,21 @@ public class TreasureStash {
             }
         }
         return 0;
+    }
+
+    public int getLockpickAmount(String lockpickName) {
+        for (LockPicker lockPicker : lockpicks.keySet()) {
+            if (lockPicker.getName().equals(lockpickName)) {
+                return lockpicks.get(lockPicker);
+            }
+        }
+        return 0;
+    }
+
+    public void useLockpick(LockPicker lockPicker) {
+        if (lockpicks.containsKey(lockPicker)) {
+            lockpicks.put(lockPicker, lockpicks.get(lockPicker) - 1);
+        }
     }
 
     public MenuHolder<SlommyPanels> getStashMenu(int page) {
@@ -156,10 +215,13 @@ public class TreasureStash {
         for (TreasureBag bag : bags.keySet()) {
             totalBags += bags.get(bag);
         }
+        int totalPicks = 0;
+        for (LockPicker lockPicker : lockpicks.keySet()) {
+            totalPicks += lockpicks.get(lockPicker);
+        }
         if (totalBags < 1) {
             ItemButton noBagsButton = new ItemButton(Items.items.get("gui/no_bags").build(player));
             panel.setButton(22, noBagsButton);
-            return panel;
         }
         for (TreasureBag bag : bags.keySet()) {
             while (takenSlots.contains(i)) {
@@ -194,7 +256,40 @@ public class TreasureStash {
                 i++;
             }
         }
+        // other GUI elements
+        ItemStack treasureStashItem = Items.items.get("gui/treasure_stash").build(player);
+        ItemMeta stashItemMeta = treasureStashItem.getItemMeta();
+        List<Component> stashItemLore = new ArrayList<>();
+        stashItemLore.add(Msg.JSONcolor("&7Your Bags: &e" + IntegerCommaParser.parse(totalBags)));
+        if (totalBags > 0) {
+            stashItemLore.add(Msg.JSONcolor("&7&m-------------------"));
+            for (TreasureBag bag : bags.keySet()) {
+                if (bags.get(bag) > 0) {
+                    stashItemLore.add(Msg.JSONcolor("&7" + bag.getItem().getDisplayName() + ": &e" + IntegerCommaParser.parse(bags.get(bag))));
+                }
+            }
+            stashItemLore.add(Msg.JSONcolor("&7&m-------------------"));
+        }
+        stashItemMeta.lore(stashItemLore);
+        treasureStashItem.setItemMeta(stashItemMeta);
+        ItemStack lockPickItem = Items.items.get("lockpicks/lockpick").build(player);
+        ItemMeta lockPickMeta = lockPickItem.getItemMeta();
+        List<Component> lockPickLore = new ArrayList<>();
+        lockPickLore.add(Msg.JSONcolor("&7Your Lockpicks: &e" + IntegerCommaParser.parse(totalPicks)));
+        if (totalPicks > 0) {
+            lockPickLore.add(Msg.JSONcolor("&7&m-------------------"));
+            for (LockPicker lockPicker : lockpicks.keySet()) {
+                if (lockpicks.get(lockPicker) > 0) {
+                    lockPickLore.add(Msg.JSONcolor("&7" + lockPicker.getItem().getDisplayName() + ": &e" + IntegerCommaParser.parse(lockpicks.get(lockPicker))));
+                }
+            }
+            lockPickLore.add(Msg.JSONcolor("&7&m-------------------"));
+        }
+        lockPickMeta.lore(lockPickLore);
+        lockPickItem.setItemMeta(lockPickMeta);
 
+        panel.setButton(4, new ItemButton<>(treasureStashItem));
+        panel.setButton(5, new ItemButton<>(lockPickItem));
         return panel;
     }
 }

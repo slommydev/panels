@@ -23,3 +23,7 @@ commands:
     description: Add a Treasure Bag to your Treasure Stash
     usage: /addtreasurebag <player> <bag> <amount>
     permission: slommypanels.addtreasurebag
+  addlockpick:
+    description: Add a Lockpick to your Treasure Stash
+    usage: /addlockpick <player> <lockpick> <amount>
+    permission: slommypanels.addlockpick
