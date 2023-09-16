@@ -1,10 +1,13 @@
 package net.slommy.slommypanels.GUIs.lootbags;
 
 import net.kyori.adventure.text.TextComponent;
+import net.slommy.essentials.PlayerStats.PlayerData;
 import net.slommy.essentials.SlommyItems.Item;
 import net.slommy.essentials.SlommyItems.SlommyItem;
 import net.slommy.essentials.util.Msg;
+import net.slommy.essentials.util.PlayerDataUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.List;
@@ -66,9 +69,23 @@ public class LootTable {
         this.slayingLevelForDrops = slayingLevelForDrops;
     }
 
-    public List<LootItem> getListOfDrops() {
+    public List<LootItem> getListOfDrops(Player player) {
         // generate a list of drops for the player to get
         List<LootItem> drops = new ArrayList<>();
+        int mainDropAmount = this.mainDropAmount;
+        int secondaryDropAmount = this.secondaryDropAmount;
+        PlayerData data = PlayerDataUtil.getPlayerData(player);
+        double luck = data.getStatValue("BossLuck", player);
+        // for each luck, add a 1% chance to get an extra secondary drop, and a 0.1% chance to get an extra main drop.
+        // this process repeats for each 100 and 1000 luck respectively
+        for (int i = 0; i < luck; i++) {
+            if (Math.random() < 0.001) {
+                mainDropAmount++;
+            }
+            if (Math.random() < 0.01) {
+                secondaryDropAmount++;
+            }
+        }
         for (int i = 0; i < mainDropAmount; i++) {
             try {
                 LootItem item = getDrop(mainDrops);
@@ -134,16 +151,16 @@ public class LootTable {
 
     public double getChance(LootItem item) {
         if (mainDrops.containsKey(item)) {
-            return mainDrops.get(item) * 100.0;
+            return mainDrops.get(item);
         }
         else if (secondaryDrops.containsKey(item)) {
-            return secondaryDrops.get(item) * 100.0;
+            return secondaryDrops.get(item);
         }
         return 0;
     }
 
     public enum Rarity {
-        TOKEN, COMMON, UNCOMMON, RARE, EXTREMELY_RARE, CRAZY_RARE, MYTHIC;
+        TOKEN, COMMON, UNCOMMON, RARE, VERY_RARE, EXTREMELY_RARE, CRAZY_RARE, INDUBITABLY_RARE;
 
         public static String color(LootTable.Rarity rarity) {
             switch (rarity) {
@@ -153,11 +170,14 @@ public class LootTable {
                     return "&a";
                 case RARE:
                     return "&9";
+                case VERY_RARE:
+                    return "&6";
                 case EXTREMELY_RARE:
                     return "&3";
                 case CRAZY_RARE:
-                case MYTHIC:
                     return "&d";
+                case INDUBITABLY_RARE:
+                    return "&c";
                 default:
                     return "&7";
             }
@@ -166,21 +186,24 @@ public class LootTable {
         public static Rarity getRarityByChance(double chance) {
             chance = chance * 100;
             if (chance < 0.001) {
-                return MYTHIC;
+                return INDUBITABLY_RARE;
             }
-            else if (chance < 0.1) {
+            else if (chance <= 0.1) {
                 return CRAZY_RARE;
             }
-            else if (chance < 1) {
+            else if (chance <= 1) {
                 return EXTREMELY_RARE;
             }
-            else if (chance < 10) {
+            else if (chance <= 5) {
+                return VERY_RARE;
+            }
+            else if (chance <= 15) {
                 return RARE;
             }
-            else if (chance < 30) {
+            else if (chance <= 35) {
                 return UNCOMMON;
             }
-            else if (chance < 100) {
+            else if (chance <= 100) {
                 return COMMON;
             } else {
                 return TOKEN;
@@ -197,12 +220,14 @@ public class LootTable {
                     return color(rarity) + "&lUNCOMMON DROP";
                 case RARE:
                     return color(rarity) + "&lRARE DROP";
+                case VERY_RARE:
+                    return color(rarity) + "&lVERY RARE DROP";
                 case EXTREMELY_RARE:
                     return color(rarity) + "&lEXTREMELY RARE DROP";
                 case CRAZY_RARE:
                     return color(rarity) + "&lCRAZY RARE DROP";
-                case MYTHIC:
-                    return color(rarity) + "&lMYTHIC DROP";
+                case INDUBITABLY_RARE:
+                    return color(rarity) + "&lINDUBITABLY RARE DROP";
                 default:
                     return "&7&lSO-RARE-IT'S-UNKNOWN DROP";
             }
