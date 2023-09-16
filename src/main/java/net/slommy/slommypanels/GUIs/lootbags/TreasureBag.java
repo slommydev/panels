@@ -9,12 +9,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import xyz.janboerman.guilib.api.menu.ItemButton;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -161,6 +164,106 @@ public class TreasureBag implements InventoryHolder {
 
     public void setLockPicker(LockPicker lockPicker) {
         this.lockPicker = lockPicker;
+    }
+
+    public List<LootItem> getAllDrops() {
+        return lootTable.getAllDropItems();
+    }
+
+    public MenuHolder<SlommyPanels> getLootDropViewPanel(Player player, int page) {
+        MenuHolder<SlommyPanels> panel = new MenuHolder<>(SlommyPanels.getInstance(), 54, Msg.color(displayName + " Loot"));
+        List<Integer> takenSlots = new ArrayList<>();
+        // make a border of empty panes around the menu
+        for (int i = 0; i < 54; i++) {
+            if (i < 9 || i > 44 || i % 9 == 0 || i % 9 == 8) {
+                panel.setButton(i, new ItemButton<>(Items.items.get("gui/blank_pane").build(player)));
+                takenSlots.add(i);
+            }
+        }
+
+        List<LootItem> drops = getAllDrops();
+        // sort drops by whether they are a main drop or a secondary drop, then by rarity (rarest to most common)
+        drops.sort((o1, o2) -> {
+            if (lootTable.getMainDrops().containsKey(o1) && !lootTable.getMainDrops().containsKey(o2)) {
+                return -1;
+            } else if (!lootTable.getMainDrops().containsKey(o1) && lootTable.getMainDrops().containsKey(o2)) {
+                return 1;
+            } else {
+                double chance1 = lootTable.getChance(o1) / 100;
+                double chance2 = lootTable.getChance(o2) / 100;
+                LootTable.Rarity rarity1 = LootTable.Rarity.getRarityByChance(chance1);
+                LootTable.Rarity rarity2 = LootTable.Rarity.getRarityByChance(chance2);
+                return rarity2.compareTo(rarity1);
+            }
+        });
+
+        int pages = (int) Math.ceil(drops.size() / 27.0);
+        if (page != 1) {
+            ItemButton previousPageButton = new ItemButton(Items.items.get("gui/prev_page").build(player)) {
+                @Override
+                public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
+                    MenuHolder<SlommyPanels> panel = getLootDropViewPanel(player, page - 1);
+                    player.openInventory(panel.getInventory());
+                }
+            };
+            panel.setButton(45, previousPageButton);
+        }
+        if (page != pages) {
+            ItemButton nextPageButton = new ItemButton(Items.items.get("gui/next_page").build(player)) {
+                @Override
+                public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
+                    MenuHolder<SlommyPanels> panel = getLootDropViewPanel(player, page + 1);
+                    player.openInventory(panel.getInventory());
+                }
+            };
+            panel.setButton(53, nextPageButton);
+        }
+
+        List<LootItem> itemsOnPage = new ArrayList<>();
+        for (int i = 0; i < 28; i++) {
+            if (drops.size() > i + (page - 1) * 27) {
+                itemsOnPage.add(drops.get(i + (page - 1) * 27));
+            }
+        }
+        for (int i = 0; i < itemsOnPage.size(); i++) {
+            LootItem item = itemsOnPage.get(i);
+            int slot = i;
+            while (takenSlots.contains(slot)) {
+                slot++;
+            }
+            ItemStack itemStack = item.getSlommyItem().build(player);
+            ItemMeta meta = itemStack.getItemMeta();
+            List<Component> lore = new ArrayList<>();
+            if (lootTable.getMainDrops().containsKey(item)) {
+                lore.add(Msg.JSONcolor("&7Main Drop"));
+            } else {
+                lore.add(Msg.JSONcolor("&7Secondary Drop"));
+            }
+            double chance = lootTable.getChance(item) / 100;
+            DecimalFormat df = new DecimalFormat("#.##");
+            LootTable.Rarity rarity = LootTable.Rarity.getRarityByChance(chance);
+            lore.add(Msg.JSONcolor(LootTable.Rarity.getRarityString(rarity)));
+            meta.lore(lore);
+            itemStack.setItemMeta(meta);
+            itemStack.setAmount(item.getAmount());
+            panel.setButton(slot, new ItemButton<>(itemStack));
+            takenSlots.add(slot);
+        }
+
+        panel.setButton(49, new ItemButton(Items.items.get("gui/back").build(player)) {
+            @Override
+            public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
+                player.closeInventory();
+                Bukkit.dispatchCommand(player, "stash");
+            }
+        });
+
+        return panel;
+    }
+
+    public void viewLootDrops(Player player) {
+        MenuHolder<SlommyPanels> panel = getLootDropViewPanel(player, 1);
+        player.openInventory(panel.getInventory());
     }
 
     @Override

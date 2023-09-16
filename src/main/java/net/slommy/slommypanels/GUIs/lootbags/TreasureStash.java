@@ -242,13 +242,21 @@ public class TreasureStash {
                     lore = meta.lore();
                 }
                 lore.add(Msg.JSONcolor("&7You have: &e" + bags.get(bag)));
+                lore.add(Msg.JSONcolor(""));
+                lore.add(Msg.JSONcolor("&eLeft click to open!"));
+                lore.add(Msg.JSONcolor("&eRight click to view drops!"));
                 meta.lore(lore);
                 bagItem.setItemMeta(meta);
                 ItemButton bagButton = new ItemButton(bagItem) {
                     @Override
                     public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
-                        player.closeInventory();
-                        useBag(bag);
+                        if (event.isLeftClick()) {
+                            player.closeInventory();
+                            useBag(bag);
+                        }
+                        if (event.isRightClick()) {
+                            bag.viewLootDrops(player);
+                        }
                     }
                 };
                 panel.setButton(i, bagButton);
