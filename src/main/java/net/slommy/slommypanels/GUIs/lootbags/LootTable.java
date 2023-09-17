@@ -75,17 +75,32 @@ public class LootTable {
         int mainDropAmount = this.mainDropAmount;
         int secondaryDropAmount = this.secondaryDropAmount;
         PlayerData data = PlayerDataUtil.getPlayerData(player);
-        double luck = data.getStatValue("BossLuck", player);
-        // for each luck, add a 1% chance to get an extra secondary drop, and a 0.1% chance to get an extra main drop.
-        // this process repeats for each 100 and 1000 luck respectively
-        for (int i = 0; i < luck; i++) {
-            if (Math.random() < 0.001) {
-                mainDropAmount++;
-            }
-            if (Math.random() < 0.01) {
+        double luckSecondary = data.getStatValue("BossLuck", player);
+        double luckMain = luckSecondary;
+        // for each luck a player has, it adds a 1% chance to add an extra secondary drop, and a 0.1% chance to add an extra main drop.
+        // at 100 and 1000 luck respectively, there should be a 100% chance to get an extra secondary drop, and a 10% chance to get an extra main drop.
+        // after 100 and 1000, this process repeats.
+        while (luckSecondary >= 100) {
+            secondaryDropAmount++;
+            luckSecondary -= 100;
+        }
+        while (luckMain >= 1000) {
+            mainDropAmount++;
+            luckMain -= 1000;
+        }
+        if (luckSecondary > 0) {
+            double chance = Math.random() * 100;
+            if (chance <= luckSecondary) {
                 secondaryDropAmount++;
             }
         }
+        if (luckMain > 0) {
+            double chance = Math.random() * 1000;
+            if (chance <= luckMain) {
+                mainDropAmount++;
+            }
+        }
+
         for (int i = 0; i < mainDropAmount; i++) {
             try {
                 LootItem item = getDrop(mainDrops);
@@ -203,7 +218,7 @@ public class LootTable {
             else if (chance <= 35) {
                 return UNCOMMON;
             }
-            else if (chance <= 100) {
+            else if (chance < 100) {
                 return COMMON;
             } else {
                 return TOKEN;
@@ -234,4 +249,54 @@ public class LootTable {
         }
 
     };
+
+    public String getBossLuckStringForSecondaryDrops(Player player) {
+        PlayerData data = PlayerDataUtil.getPlayerData(player);
+        double luck = data.getStatValue("BossLuck", player);
+        String luckIcon = data.getStat("BossLuck").getIcon();
+        // for each luck a player has, it adds a 1% chance to add an extra secondary drop, and a 0.1% chance to add an extra main drop.
+        // at 100 and 1000 luck respectively, there should be a 100% chance to get an extra secondary drop, and a 10% chance to get an extra main drop.
+        // after 100 and 1000, this process repeats.
+        int extraDrops = 0;
+        while (luck >= 100) {
+            extraDrops++;
+            luck -= 100;
+        }
+        String extraDropsString = "";
+        if (extraDrops > 0) {
+            extraDropsString = "&d(" + luckIcon + " +" + extraDrops + ")";
+        }
+        if (luck > 0 && extraDrops > 0) {
+            extraDropsString = "&d(" + luckIcon + " +" + extraDrops + ") &5(" + luckIcon + " +" + luck + "% chance)";
+        }
+        else if (luck > 0) {
+            extraDropsString = "&5(" + luckIcon + " +" + luck + "% chance)";
+        }
+        return extraDropsString;
+    }
+
+    public String getBossLuckStringForMainDrops(Player player) {
+        PlayerData data = PlayerDataUtil.getPlayerData(player);
+        double luck = data.getStatValue("BossLuck", player);
+        String luckIcon = data.getStat("BossLuck").getIcon();
+        // for each luck a player has, it adds a 1% chance to add an extra secondary drop, and a 0.1% chance to add an extra main drop.
+        // at 100 and 1000 luck respectively, there should be a 100% chance to get an extra secondary drop, and a 10% chance to get an extra main drop.
+        // after 100 and 1000, this process repeats.
+        int extraDrops = 0;
+        while (luck >= 1000) {
+            extraDrops++;
+            luck -= 1000;
+        }
+        String extraDropsString = "";
+        if (extraDrops > 0) {
+            extraDropsString = "&d(" + luckIcon + " +" + extraDrops + ")";
+        }
+        if (luck > 0 && extraDrops > 0) {
+            extraDropsString = "&d(" + luckIcon + " +" + extraDrops + ") &5(" + luckIcon + " +" + luck / 10 + "% chance)";
+        }
+        else if (luck > 0) {
+            extraDropsString = "&5(" + luckIcon + " +" + luck / 10 + "% chance)";
+        }
+        return extraDropsString;
+    }
 }

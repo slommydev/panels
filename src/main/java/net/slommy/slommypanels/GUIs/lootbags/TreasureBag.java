@@ -180,6 +180,16 @@ public class TreasureBag implements InventoryHolder {
             }
         }
 
+        ItemStack bagItem = item.build(player);
+        ItemMeta bagItemMeta = bagItem.getItemMeta();
+        List<Component> bagItemLore = new ArrayList<>();
+        bagItemLore.add(Msg.JSONcolor("&7Main Drop Rolls: &e" + lootTable.getMainDropAmount() + " " + lootTable.getBossLuckStringForMainDrops(player)));
+        bagItemLore.add(Msg.JSONcolor("&7Secondary Drop Rolls: &e" + lootTable.getSecondaryDropAmount() + " " + lootTable.getBossLuckStringForSecondaryDrops(player)));
+        bagItemMeta.lore(bagItemLore);
+        bagItem.setItemMeta(bagItemMeta);
+        panel.setButton(4, new ItemButton<>(bagItem));
+
+
         List<LootItem> drops = getAllDrops();
         // sort drops by whether they are a main drop or a secondary drop, then by drop chance (rarest to least rare), then alphabetically by item category, then alphabetically by item name
         drops.sort((o1, o2) -> {
