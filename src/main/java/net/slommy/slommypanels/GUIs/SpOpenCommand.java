@@ -3,6 +3,7 @@ package net.slommy.slommypanels.GUIs;
 import net.kyori.adventure.text.TextComponent;
 import net.slommy.essentials.SlommyItems.SlommyItem;
 import net.slommy.essentials.util.Msg;
+import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
 import net.slommy.slommypanels.GUIs.lootbags.LootTable;
 import net.slommy.slommypanels.GUIs.skills.AllSkillsPanel;
@@ -52,6 +53,11 @@ public class SpOpenCommand implements CommandExecutor {
 
         if (args[0].equalsIgnoreCase("testbag")) {
             GlobalLootbagManagers.getBag("testbag").openTreasureBag(player);
+        }
+
+        if (args[0].equalsIgnoreCase("enrich")) {
+            EnrichmentMenu menu = new EnrichmentMenu();
+            menu.openEnrichmentAnvil(player, null);
         }
 
 
