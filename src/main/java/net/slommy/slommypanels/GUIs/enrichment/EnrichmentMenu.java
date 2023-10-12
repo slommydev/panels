@@ -9,6 +9,7 @@ import net.slommy.essentials.SlommyItems.SlommyItem;
 import net.slommy.essentials.util.GetSlommyItem;
 import net.slommy.essentials.util.IntegerCommaParser;
 import net.slommy.essentials.util.Msg;
+import net.slommy.essentials.util.SlommyItemExchange;
 import net.slommy.slommypanels.SlommyPanels;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -45,13 +46,26 @@ public class EnrichmentMenu implements InventoryHolder {
                     break;
                 }
             }
+            SlommyItem recombobulatorItem = Items.items.get("items/gizmoco_enrichup_booster");
+            if (SlommyItemExchange.checkInventory(player, recombobulatorItem) > 0) {
+                if (!PersistentDataUtils.getHasRarityBoost(item) && Items.items.get(GetSlommyItem.getFromItemTag(item)).getRarityEnum() != Item.rarity.MYSTICAL && Items.items.get(GetSlommyItem.getFromItemTag(item)).getRarityEnum() != Item.rarity.MYTHIC) {
+                    ItemStack recombobulator = recombobulatorItem.build(player);
+                    ItemMeta meta = recombobulator.getItemMeta();
+                    List<Component> lore = new ArrayList<>();
+                    lore.add(Msg.JSONcolor("&7Click to consume a " + recombobulatorItem.getDisplayName()));
+                    lore.add(Msg.JSONcolor("&7and upgrade your " + Items.items.get(GetSlommyItem.getFromItemTag(item)).getDisplayName() + "&7's rarity!"));
+                    meta.lore(lore);
+                    recombobulator.setItemMeta(meta);
+                    inventory.setItem(53, recombobulator);
+                }
+            }
             // make a border around the item based on the item's rarity
             String itemID = GetSlommyItem.getFromItemTag(item);
             SlommyItem slommyItem = Items.items.get(itemID);
             if (slommyItem == null) {
                 return;
             }
-            Item.rarity rarity = Item.findRarity(slommyItem.getRarity());
+            Item.rarity rarity = Item.findRarity(slommyItem.getRarity(item));
             ItemStack borderItem = Items.items.get("gui/common_glass").build(player);
             int rarityValue = Item.rarity.value(rarity);
             List<Integer> EnrichmentInventorySlots = new ArrayList<>();

@@ -9,6 +9,7 @@ import net.slommy.essentials.SlommyItems.*;
 import net.slommy.essentials.util.GetSlommyItem;
 import net.slommy.essentials.util.Msg;
 import net.slommy.essentials.util.PlayerTrackerUtil;
+import net.slommy.essentials.util.SlommyItemExchange;
 import net.slommy.slommypanels.SlommyPanels;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -101,6 +102,16 @@ public class EnrichmentMenuClickEvents implements Listener {
                         menu.openEnrichmentSelectMenu((Player) event.getWhoClicked(), Objects.requireNonNull(inv.getItem(13)), slot);
                     }
                 }
+                return;
+            }
+            if (itemID.split("/")[0].equalsIgnoreCase("items") && itemID.split("/")[1].equalsIgnoreCase("gizmoco_enrichup_booster")) {
+                event.setCancelled(true);
+                PersistentDataUtils.addRarityBoost(Objects.requireNonNull(inv.getItem(13)));
+                ItemUpdateUtils.updateItemInContainer(((Player) event.getWhoClicked()), 13);
+                SlommyItemExchange.takeItems((Player) event.getWhoClicked(), Items.items.get("items/gizmoco_enrichup_booster"), 1);
+                EnrichmentMenu menu = new EnrichmentMenu();
+                menu.openEnrichmentAnvil((Player) event.getWhoClicked(), Objects.requireNonNull(inv.getItem(13)));
+                ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1, 1.5f);
                 return;
             }
             if (event.getRawSlot() > 9*6 - 1) {
@@ -228,6 +239,7 @@ public class EnrichmentMenuClickEvents implements Listener {
                 return;
             }
             if (!slommyItem.getType().equalsIgnoreCase("enrichment")) {
+                event.setCancelled(true);
                 return;
             }
             ItemStack itemToEnrich = inv.getItem(4);

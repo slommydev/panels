@@ -59,6 +59,10 @@ public class SpOpenCommand implements CommandExecutor {
             EnrichmentMenu menu = new EnrichmentMenu();
             menu.openEnrichmentAnvil(player, null);
         }
+        if (args[0].equalsIgnoreCase("forceenrich")) {
+            EnrichmentMenu menu = new EnrichmentMenu();
+            menu.openEnrichmentAnvil(player, player.getInventory().getItemInMainHand());
+        }
 
 
         return true;
