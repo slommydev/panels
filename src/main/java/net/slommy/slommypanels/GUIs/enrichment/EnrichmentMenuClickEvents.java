@@ -132,7 +132,7 @@ public class EnrichmentMenuClickEvents implements Listener {
             if (slommyItem == null) {
                 return;
             }
-            if (slommyItem.getType().equalsIgnoreCase("enrichment")) {
+            if (!slommyItem.getType().equalsIgnoreCase("enrichment")) {
                 return;
             }
             event.setCancelled(true);
@@ -246,7 +246,7 @@ public class EnrichmentMenuClickEvents implements Listener {
             if (slommyItem == null) {
                 return;
             }
-            if (slommyItem.getType().equalsIgnoreCase("enrichment")) {
+            if (!slommyItem.getType().equalsIgnoreCase("enrichment")) {
                 event.setCancelled(true);
                 return;
             }
