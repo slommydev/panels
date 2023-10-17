@@ -33,6 +33,7 @@ public class EnrichmentMenuClickEvents implements Listener {
     @EventHandler
     public void onClickItemEnrichmentMenu(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof EnrichmentMenu) {
+            event.setCancelled(true);
             Inventory inv = event.getInventory();
             ItemStack item = event.getCurrentItem();
             if (item == null) {
@@ -131,7 +132,7 @@ public class EnrichmentMenuClickEvents implements Listener {
             if (slommyItem == null) {
                 return;
             }
-            if (!slommyItem.getType().equalsIgnoreCase("enrichment")) {
+            if (slommyItem.getType().equalsIgnoreCase("enrichment")) {
                 return;
             }
             event.setCancelled(true);
@@ -211,6 +212,13 @@ public class EnrichmentMenuClickEvents implements Listener {
             }
             else {
                 EnrichmentMenu menu = new EnrichmentMenu();
+                if (!event.getWhoClicked().getInventory().contains(item)) {
+                    Msg.send((Player) event.getWhoClicked(), "&cThat item no longer exists. It may have been updated. Please try again.");
+                    // re-open the menu
+                    SelectItemToEnrichMenu fixMenu = new SelectItemToEnrichMenu();
+                    fixMenu.openEnrichableItemsMenu((Player) event.getWhoClicked());
+                    return;
+                }
                 menu.openEnrichmentAnvil((Player) event.getWhoClicked(), item);
                 ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1.5f);
             }
@@ -238,7 +246,7 @@ public class EnrichmentMenuClickEvents implements Listener {
             if (slommyItem == null) {
                 return;
             }
-            if (!slommyItem.getType().equalsIgnoreCase("enrichment")) {
+            if (slommyItem.getType().equalsIgnoreCase("enrichment")) {
                 event.setCancelled(true);
                 return;
             }
