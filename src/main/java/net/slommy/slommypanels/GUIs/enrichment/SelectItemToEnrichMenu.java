@@ -34,6 +34,10 @@ public class SelectItemToEnrichMenu implements InventoryHolder {
         Inventory playerInventory = player.getInventory();
         List<ItemStack> enrichableItems = new ArrayList<>();
         for (int i = 0; i < playerInventory.getSize(); i++) {
+            // DO NOT INCLUDE ARMOR SLOTS
+            if (i == 36 || i == 37 || i == 38 || i == 39) {
+                continue;
+            }
             ItemStack item = playerInventory.getItem(i);
             if (item == null) {
                 continue;
