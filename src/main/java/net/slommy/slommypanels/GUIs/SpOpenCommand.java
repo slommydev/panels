@@ -1,24 +1,17 @@
 package net.slommy.slommypanels.GUIs;
 
-import net.kyori.adventure.text.TextComponent;
-import net.slommy.essentials.SlommyItems.SlommyItem;
-import net.slommy.essentials.util.Msg;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
-import net.slommy.slommypanels.GUIs.lootbags.LootTable;
+import net.slommy.slommypanels.GUIs.recipes.CraftingTable;
+import net.slommy.slommypanels.GUIs.recipes.RecipeCreator;
 import net.slommy.slommypanels.GUIs.skills.AllSkillsPanel;
 import net.slommy.slommypanels.GUIs.skills.IndividualSkillPanel;
 import net.slommy.slommypanels.SlommyPanels;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SpOpenCommand implements CommandExecutor {
     @Override
@@ -62,6 +55,17 @@ public class SpOpenCommand implements CommandExecutor {
         if (args[0].equalsIgnoreCase("forceenrich")) {
             EnrichmentMenu menu = new EnrichmentMenu();
             menu.openEnrichmentAnvil(player, player.getInventory().getItemInMainHand());
+        }
+        if (args[0].equalsIgnoreCase("recipe")) {
+            RecipeCreator recipeCreator = new RecipeCreator("test", "test");
+            recipeCreator.openMenu(player);
+        }
+        if (args[0].equalsIgnoreCase("editrecipe")) {
+            RecipeCreator recipeCreator = new RecipeCreator("test", "test");
+            recipeCreator.openRecipe(player, "test", "test");
+        }
+        if (args[0].equalsIgnoreCase("craft")) {
+            CraftingTable.openMenu(player);
         }
 
 

@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLib;
 import net.slommy.slommypanels.GUIs.SpOpenCommand;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenuClickEvents;
 import net.slommy.slommypanels.GUIs.lootbags.*;
+import net.slommy.slommypanels.GUIs.recipes.RecipeCreatorEvents;
 import net.slommy.slommypanels.cmds.*;
 import net.slommy.slommypanels.events.LoadStuffOnJoin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,6 +40,7 @@ public final class SlommyPanels extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TreasureBagCloseEvent(), this);
         getServer().getPluginManager().registerEvents(new LoadStuffOnJoin(), this);
         getServer().getPluginManager().registerEvents(new EnrichmentMenuClickEvents(), this);
+        getServer().getPluginManager().registerEvents(new RecipeCreatorEvents(), this);
 
         this.guiLibrary = guiLibrary;
         LootTableLoader.loadLootTables();
