@@ -70,18 +70,24 @@ public class RecipeEditor implements TabExecutor {
         if (strings.length == 1) {
             options.add("edit");
             options.add("create");
-        }
+            options.removeIf(option -> !option.toLowerCase().startsWith(strings[0].toLowerCase()));
+            return options;
+        } else
         if (strings.length == 2) {
             options.addAll(Recipes.getRecipeCategories());
-        }
+            options.removeIf(option -> !option.toLowerCase().startsWith(strings[1].toLowerCase()));
+            return options;
+        } else
         if (strings.length == 3) {
+            options.removeIf(option -> !option.startsWith(strings[1]));
             if (strings[0].equalsIgnoreCase("edit")) {
                 options.addAll(Recipes.getRecipeIDs(strings[1]));
+                options.removeIf(option -> !option.toLowerCase().startsWith(strings[0].toLowerCase()));
             } else {
                 options.add("<name>");
             }
+            return options;
         }
-        options.removeIf(option -> !option.startsWith(strings[1]));
         return options;
     }
 }
