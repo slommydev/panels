@@ -27,3 +27,8 @@ commands:
     description: Add a Lockpick to your Treasure Stash
     usage: /addlockpick <player> <lockpick> <amount>
     permission: slommypanels.addlockpick
+  slommyrecipe:
+    description: Create or edit a Custom Slommy Recipe
+    usage: /slommyrecipe <create/edit> <category> <name>
+    permission: slommypanels.slommyrecipe
+    aliases: ["sr"]

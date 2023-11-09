@@ -36,6 +36,7 @@ public final class SlommyPanels extends JavaPlugin {
         getCommand("stash").setExecutor(new stash());
         getCommand("addtreasurebag").setExecutor(new AddTreasureBag());
         getCommand("addlockpick").setExecutor(new AddLockPick());
+        getCommand("slommyrecipe").setExecutor(new RecipeEditor());
 
         getServer().getPluginManager().registerEvents(new TreasureBagCloseEvent(), this);
         getServer().getPluginManager().registerEvents(new LoadStuffOnJoin(), this);
