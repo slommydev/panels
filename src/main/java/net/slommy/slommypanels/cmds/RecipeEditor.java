@@ -79,13 +79,12 @@ public class RecipeEditor implements TabExecutor {
             return options;
         } else
         if (strings.length == 3) {
-            options.removeIf(option -> !option.startsWith(strings[1]));
             if (strings[0].equalsIgnoreCase("edit")) {
                 options.addAll(Recipes.getRecipeIDs(strings[1]));
-                options.removeIf(option -> !option.toLowerCase().startsWith(strings[0].toLowerCase()));
             } else {
                 options.add("<name>");
             }
+            options.removeIf(option -> !option.startsWith(strings[2]));
             return options;
         }
         return options;
