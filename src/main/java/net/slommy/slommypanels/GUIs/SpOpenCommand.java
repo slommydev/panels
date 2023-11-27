@@ -3,6 +3,7 @@ package net.slommy.slommypanels.GUIs;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
 import net.slommy.slommypanels.GUIs.recipes.CraftingTable;
+import net.slommy.slommypanels.GUIs.recipes.RecipeBook;
 import net.slommy.slommypanels.GUIs.recipes.RecipeCreator;
 import net.slommy.slommypanels.GUIs.skills.AllSkillsPanel;
 import net.slommy.slommypanels.GUIs.skills.IndividualSkillPanel;
@@ -66,6 +67,9 @@ public class SpOpenCommand implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("craft")) {
             CraftingTable.openMenu(player);
+        }
+        if (args[0].equalsIgnoreCase("recipebook")) {
+            RecipeBook.openCategorySelectorMenu(player);
         }
 
 
