@@ -3,6 +3,8 @@ package net.slommy.slommypanels;
 
 import com.comphenix.protocol.ProtocolLib;
 import net.slommy.slommypanels.GUIs.SpOpenCommand;
+import net.slommy.slommypanels.GUIs.artifacting.IdentificationMenu;
+import net.slommy.slommypanels.GUIs.artifacting.events.IdentificationMenuEventManagers;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenuClickEvents;
 import net.slommy.slommypanels.GUIs.lootbags.*;
 import net.slommy.slommypanels.GUIs.recipes.RecipeCreatorEvents;
@@ -42,6 +44,7 @@ public final class SlommyPanels extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new LoadStuffOnJoin(), this);
         getServer().getPluginManager().registerEvents(new EnrichmentMenuClickEvents(), this);
         getServer().getPluginManager().registerEvents(new RecipeCreatorEvents(), this);
+        getServer().getPluginManager().registerEvents(new IdentificationMenuEventManagers(), this);
 
         this.guiLibrary = guiLibrary;
         LootTableLoader.loadLootTables();
