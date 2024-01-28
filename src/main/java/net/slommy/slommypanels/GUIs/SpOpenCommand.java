@@ -1,5 +1,8 @@
 package net.slommy.slommypanels.GUIs;
 
+import net.slommy.essentials.SlommyItems.Artifacting.ArtifactSeries;
+import net.slommy.slommypanels.GUIs.artifacting.ArtifactCollectionMenu;
+import net.slommy.slommypanels.GUIs.artifacting.ArtifactMenu;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
 import net.slommy.slommypanels.GUIs.recipes.CraftingTable;
@@ -70,6 +73,12 @@ public class SpOpenCommand implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("recipebook")) {
             RecipeBook.openCategorySelectorMenu(player);
+        }
+        if (args[0].equalsIgnoreCase("test-artifact")) {
+            ArtifactMenu.openArtifactMenu(player, ArtifactSeries.FROSTED_DEPTHS, 1);
+        }
+        if (args[0].equalsIgnoreCase("test-defroster")) {
+            ArtifactCollectionMenu.open(player, ArtifactSeries.FROSTED_DEPTHS);
         }
 
 
