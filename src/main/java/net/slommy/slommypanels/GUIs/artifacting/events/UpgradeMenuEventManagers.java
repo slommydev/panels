@@ -80,8 +80,8 @@ public class UpgradeMenuEventManagers implements Listener {
                 SlommyItemExchange.takeItems((Player) event.getWhoClicked(), requiredItem, 1);
                 for (PersistentItemData dataTag : data) {
                     if (dataTag.getApplication() == PersistentItemData.Application.ARTIFACT_STATMOD) {
-                        int value = Integer.parseInt(dataTag.getValue());
-                        value = value + (20/(value/10) + 1);
+                        int value = Integer.parseInt(dataTag.getValue()) + 1;
+                        value = value + (20/((value/10) + 1));
                         if (value > 100) {
                             value = 100;
                         }
