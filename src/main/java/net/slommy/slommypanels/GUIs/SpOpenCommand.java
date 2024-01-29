@@ -3,6 +3,7 @@ package net.slommy.slommypanels.GUIs;
 import net.slommy.essentials.SlommyItems.Artifacting.ArtifactSeries;
 import net.slommy.slommypanels.GUIs.artifacting.ArtifactCollectionMenu;
 import net.slommy.slommypanels.GUIs.artifacting.ArtifactMenu;
+import net.slommy.slommypanels.GUIs.artifacting.UpgradeMenu;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
 import net.slommy.slommypanels.GUIs.recipes.CraftingTable;
@@ -79,6 +80,10 @@ public class SpOpenCommand implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("test-defroster")) {
             ArtifactCollectionMenu.open(player, ArtifactSeries.FROSTED_DEPTHS);
+        }
+        if (args[0].equalsIgnoreCase("test-artifact-upgrade")) {
+            UpgradeMenu upgradeMenu = new UpgradeMenu();
+            upgradeMenu.openUpgradeMenu(player, player.getInventory().getItemInMainHand(), ArtifactSeries.FROSTED_DEPTHS);
         }
 
 

@@ -95,7 +95,7 @@ public class ConfirmIdentifyItemMenu {
                 PlayerTrackerUtil.getPlayerTracker(player).player_bank_balance -= item.getArtifactInfo().getCostToIdentify();
                 IdentificationMenu menu = new IdentificationMenu();
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 2);
-                menu.open(player, Items.get(item.getArtifactInfo().getReturnItemID()));
+                menu.open(player, Items.get(item.getArtifactInfo().getReturnItemID()), item.getArtifactInfo().getSeries());
             }
         });
 

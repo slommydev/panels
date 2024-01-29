@@ -3,6 +3,7 @@ package net.slommy.slommypanels.GUIs.artifacting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.slommy.essentials.SlommyItems.*;
+import net.slommy.essentials.SlommyItems.Artifacting.ArtifactSeries;
 import net.slommy.essentials.util.Msg;
 import net.slommy.essentials.util.PlayerDataUtil;
 import net.slommy.essentials.util.SoundLibrary;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IdentificationMenu implements InventoryHolder {
-    public void open(Player player, SlommyItem slommyItem) {
+    public void open(Player player, SlommyItem slommyItem, ArtifactSeries series) {
         ItemStack itemStack = slommyItem.build(player);
         ItemMeta returnMeta = itemStack.getItemMeta();
         List<Component> lore2 = returnMeta.lore();
@@ -66,6 +67,8 @@ public class IdentificationMenu implements InventoryHolder {
         PersistentDataUtils.addPersistentDataTag(itemStack, artifactFidelity);
         PersistentItemData is_artifact = new PersistentItemData("is_artifact", PersistentItemData.Application.IS_IDENTIFIED_ARTIFACT, "true");
         PersistentDataUtils.addPersistentDataTag(itemStack, is_artifact);
+        PersistentItemData artifactSeries = new PersistentItemData("artifact_series", PersistentItemData.Application.ARTIFACT_FROM_SERIES, series.toString());
+        PersistentDataUtils.addPersistentDataTag(itemStack, artifactSeries);
         int unusualRoll = (int) (Math.random() * 16);
         if (unusualRoll == 0) {
             PersistentItemData unusual = new PersistentItemData("unusual", PersistentItemData.Application.ARTIFACT_IS_UNUSUAL, "true");

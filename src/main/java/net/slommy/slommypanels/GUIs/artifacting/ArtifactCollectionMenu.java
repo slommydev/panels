@@ -20,7 +20,13 @@ public class ArtifactCollectionMenu {
                 ArtifactMenu.openArtifactMenu(player, series, 1);
             }
         });
-        panel.setButton(16, new ItemButton(series.getUpgradeIcon().build(player)));
+        panel.setButton(16, new ItemButton(series.getUpgradeIcon().build(player)) {
+            @Override
+            public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
+                UpgradeMenu menu = new UpgradeMenu();
+                menu.openUpgradeMenu(player, null, series);
+            }
+        });
 
         player.openInventory(panel.getInventory());
 
