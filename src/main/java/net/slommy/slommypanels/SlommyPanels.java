@@ -6,6 +6,7 @@ import net.slommy.slommypanels.GUIs.SpOpenCommand;
 import net.slommy.slommypanels.GUIs.artifacting.IdentificationMenu;
 import net.slommy.slommypanels.GUIs.artifacting.events.IdentificationMenuEventManagers;
 import net.slommy.slommypanels.GUIs.artifacting.events.UpgradeMenuEventManagers;
+import net.slommy.slommypanels.GUIs.capes.CapeSelectionClickEvents;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenuClickEvents;
 import net.slommy.slommypanels.GUIs.imbuing.CharmImbuingMenuClickEvents;
 import net.slommy.slommypanels.GUIs.lootbags.*;
@@ -41,6 +42,7 @@ public final class SlommyPanels extends JavaPlugin {
         getCommand("addtreasurebag").setExecutor(new AddTreasureBag());
         getCommand("addlockpick").setExecutor(new AddLockPick());
         getCommand("slommyrecipe").setExecutor(new RecipeEditor());
+        getCommand("profile").setExecutor(new profile());
 
         getServer().getPluginManager().registerEvents(new TreasureBagCloseEvent(), this);
         getServer().getPluginManager().registerEvents(new LoadStuffOnJoin(), this);
@@ -49,6 +51,7 @@ public final class SlommyPanels extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new IdentificationMenuEventManagers(), this);
         getServer().getPluginManager().registerEvents(new UpgradeMenuEventManagers(), this);
         getServer().getPluginManager().registerEvents(new CharmImbuingMenuClickEvents(), this);
+        getServer().getPluginManager().registerEvents(new CapeSelectionClickEvents(), this);
 
         this.guiLibrary = guiLibrary;
         LootTableLoader.loadLootTables();

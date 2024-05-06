@@ -136,12 +136,6 @@ public class CharmImbuingMenu implements InventoryHolder {
             ItemUpdateUtils.updateItemInContainer(player, 32);
             for (int i = 0; i < imbued_items.size(); i++) {
                 ItemUpdateUtils.updateItemInContainer(player, i);
-                // Update the item in the user's data
-                List<ItemStack> imbuedItems = pData.getImbuedCharmsItems();
-                ItemStack imbuedItem = panel.getInventory().getItem(i);
-                imbuedItems.set(i, imbuedItem);
-                pData.setImbuedCharmsItems(imbuedItems);
-                pData.save();
             }
         }
     }

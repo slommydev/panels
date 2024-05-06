@@ -4,6 +4,7 @@ import net.slommy.essentials.SlommyItems.Artifacting.ArtifactSeries;
 import net.slommy.slommypanels.GUIs.artifacting.ArtifactCollectionMenu;
 import net.slommy.slommypanels.GUIs.artifacting.ArtifactMenu;
 import net.slommy.slommypanels.GUIs.artifacting.UpgradeMenu;
+import net.slommy.slommypanels.GUIs.capes.CapiumMenu;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.imbuing.CharmImbuingMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
@@ -89,6 +90,9 @@ public class SpOpenCommand implements CommandExecutor {
         if (args[0].equalsIgnoreCase("imbue")) {
             CharmImbuingMenu imbuingMenu = new CharmImbuingMenu();
             imbuingMenu.openCharmImbuingMenu(player);
+        }
+        if (args[0].equalsIgnoreCase("capium")) {
+            CapiumMenu.openCapiumMenu(player);
         }
 
 

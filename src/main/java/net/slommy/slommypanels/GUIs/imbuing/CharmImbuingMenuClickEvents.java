@@ -27,6 +27,12 @@ public class CharmImbuingMenuClickEvents implements Listener {
             return;
         }
 
+        // Check if the item's slot is in the player's inventory
+        if (event.getRawSlot() > 9*6 - 1) {
+            event.setCancelled(true);
+            return;
+        }
+
         String itemID = GetSlommyItem.getFromItemTag(event.getCurrentItem());
         if (itemID == null) {
             return;

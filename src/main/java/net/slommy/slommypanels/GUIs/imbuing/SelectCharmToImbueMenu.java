@@ -36,7 +36,7 @@ public class SelectCharmToImbueMenu implements InventoryHolder {
         // Get a list of charms from the player
         Inventory playerInventory = player.getInventory();
         List<ItemStack> charms = new ArrayList<>();
-        for (int i = 0; i < playerInventory.getSize(); i++) {
+        for (int i = 0; i < 36; i++) {
             ItemStack item = playerInventory.getItem(i);
             if (item == null) {
                 continue;
