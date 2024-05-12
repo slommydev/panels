@@ -62,12 +62,14 @@ public class RecipeCreator implements InventoryHolder {
         }
 
         for (int i = 0; i < 9; i++) {
-            if (recipe.getSlot(i+1) == null) {
+            int x = i % 3;
+            int y = i / 3;
+            if (recipe.getRecipeItem(x, y) == null) {
                 inventory.setItem(RecipeCreatorEvents.getCraftingSlotFromSlotIndex(i+1), null);
                 continue;
             }
-            ItemStack item = Items.get(recipe.getSlot(i+1).getItemID()).build(player);
-            item.setAmount(recipe.getSlot(i+1).getAmount());
+            ItemStack item = Items.get(recipe.getRecipeItem(x, y).getItemID()).build(player);
+            item.setAmount(recipe.getRecipeItem(x, y).getAmount());
             inventory.setItem(RecipeCreatorEvents.getCraftingSlotFromSlotIndex(i+1), item);
         }
 

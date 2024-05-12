@@ -38,17 +38,19 @@ public class RecipeCreatorEvents implements Listener {
                     Msg.send(event.getWhoClicked(), "&cRecipe cannot be saved because the result slot is empty");
                     return;
                 }
-                for (int i = 1; i < 10; i++) {
+                for (int i = 0; i < 9; i++) {
+                    int x = i % 3;
+                    int y = i / 3;
                     if (event.getInventory().getItem(getCraftingSlotFromSlotIndex(i)) == null) {
                         nullSlots++;
-                        recipe.setSlot(i, null);
+                        recipe.setRecipeItem(x, y, null);
                         continue;
                     }
                     Msg.send(event.getWhoClicked(), "&7Setting slot " + (i + 1)  + " to " + GetSlommyItem.getFromItemTag(event.getInventory().getItem(getCraftingSlotFromSlotIndex(i))));
                     ItemStack itemStack = event.getInventory().getItem(getCraftingSlotFromSlotIndex(i));
                     if (GetSlommyItem.getFromItemTag(itemStack) == null) continue;
                     RecipeItem recipeItem = new RecipeItem(GetSlommyItem.getFromItemTag(itemStack), itemStack.getAmount());
-                    recipe.setSlot(i, recipeItem);
+                    recipe.setRecipeItem(x, y, recipeItem);
                 }
                 if (nullSlots == 9) {
                     Msg.send(event.getWhoClicked(), "&cRecipe cannot be saved because all slots are empty");
@@ -72,23 +74,23 @@ public class RecipeCreatorEvents implements Listener {
 
     public static int getCraftingSlotFromSlotIndex(int slot) {
         switch (slot) {
-            case 1:
+            case 0:
                 return 10;
-            case 2:
+            case 1:
                 return 11;
-            case 3:
+            case 2:
                 return 12;
-            case 4:
+            case 3:
                 return 19;
-            case 5:
+            case 4:
                 return 20;
-            case 6:
+            case 5:
                 return 21;
-            case 7:
+            case 6:
                 return 28;
-            case 8:
+            case 7:
                 return 29;
-            case 9:
+            case 8:
                 return 30;
             default:
                 return 0;

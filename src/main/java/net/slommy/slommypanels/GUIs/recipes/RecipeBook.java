@@ -160,106 +160,112 @@ public class RecipeBook {
             }
             panel.setButton(i, CommonButtons.blankButton(player));
         }
-        List<ItemStack> slots = new ArrayList<>();
-        List<SlommyItem> slommyItems = new ArrayList<>();
-        for (int i = 1; i < 10; i++) {
-            if (recipe.getSlot(i) == null) {
-                slots.add(new ItemStack(Material.AIR));
-                slommyItems.add(Items.get("gui/error"));
-                continue;
+        ItemStack[][] slots = new ItemStack[3][3];
+        SlommyItem[][] slommyItems = new SlommyItem[3][3];
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                if (recipe.getRecipeItem(x, y) == null) {
+                    slots[x][y] = new ItemStack(Material.AIR);
+                    slommyItems[x][y] = Items.get("gui/error");
+                    Msg.send(player, "&cRecipe has a null item at x: &7" + x + " &cy: &7" + y);
+                    continue;
+                }
+                if (Items.get(recipe.getRecipeItem(x, y).getItemID()) == null) {
+                    continue;
+                }
+                ItemStack item = Items.get(recipe.getRecipeItem(x, y).getItemID()).build(player);
+                item.setAmount(recipe.getRecipeItem(x, y).getAmount());
+                slots[x][y] = item;
+                slommyItems[x][y] = Items.get(recipe.getRecipeItem(x, y).getItemID());
             }
-            ItemStack item = Items.get(recipe.getSlot(i).getItemID()).build(player);
-            item.setAmount(recipe.getSlot(i).getAmount());
-            slots.add(item);
-            slommyItems.add(Items.get(recipe.getSlot(i).getItemID()));
         }
-        panel.setButton(10, new ItemButton(slots.get(0)) {
+        panel.setButton(10, new ItemButton(slots[0][0]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(0), panel);
+                    searchForUsages(player, slommyItems[0][0], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(0), panel);
+                    searchRecipes(player, slommyItems[0][0], panel);
                 }
             }
         });
-        panel.setButton(11, new ItemButton(slots.get(1)) {
+        panel.setButton(11, new ItemButton(slots[1][0]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(1), panel);
+                    searchForUsages(player, slommyItems[1][0], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(1), panel);
+                    searchRecipes(player, slommyItems[1][0], panel);
                 }
             }
         });
-        panel.setButton(12, new ItemButton(slots.get(2)) {
+        panel.setButton(12, new ItemButton(slots[2][0]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(2), panel);
+                    searchForUsages(player, slommyItems[2][0], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(2), panel);
+                    searchRecipes(player, slommyItems[2][0], panel);
                 }
             }
         });
-        panel.setButton(19, new ItemButton(slots.get(3)) {
+        panel.setButton(19, new ItemButton(slots[0][1]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(3), panel);
+                    searchForUsages(player, slommyItems[0][1], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(3), panel);
+                    searchRecipes(player, slommyItems[0][1], panel);
                 }
             }
         });
-        panel.setButton(20, new ItemButton(slots.get(4)) {
+        panel.setButton(20, new ItemButton(slots[1][1]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(4), panel);
+                    searchForUsages(player, slommyItems[1][1], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(4), panel);
+                    searchRecipes(player, slommyItems[1][1], panel);
                 }
             }
         });
-        panel.setButton(21, new ItemButton(slots.get(5)) {
+        panel.setButton(21, new ItemButton(slots[2][1]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(5), panel);
+                    searchForUsages(player, slommyItems[2][1], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(5), panel);
+                    searchRecipes(player, slommyItems[2][1], panel);
                 }
             }
         });
-        panel.setButton(28, new ItemButton(slots.get(6)) {
+        panel.setButton(28, new ItemButton(slots[0][2]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(6), panel);
+                    searchForUsages(player, slommyItems[0][2], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(6), panel);
+                    searchRecipes(player, slommyItems[0][2], panel);
                 }
             }
         });
-        panel.setButton(29, new ItemButton(slots.get(7)) {
+        panel.setButton(29, new ItemButton(slots[1][2]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(7), panel);
+                    searchForUsages(player, slommyItems[1][2], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(7), panel);
+                    searchRecipes(player, slommyItems[1][2], panel);
                 }
             }
         });
-        panel.setButton(30, new ItemButton(slots.get(8)) {
+        panel.setButton(30, new ItemButton(slots[2][2]) {
             @Override
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.getClick() == ClickType.RIGHT) {
-                    searchForUsages(player, slommyItems.get(8), panel);
+                    searchForUsages(player, slommyItems[2][2], panel);
                 } else if (event.getClick() == ClickType.LEFT) {
-                    searchRecipes(player, slommyItems.get(8), panel);
+                    searchRecipes(player, slommyItems[2][2], panel);
                 }
             }
         });
