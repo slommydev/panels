@@ -8,6 +8,7 @@ import net.slommy.slommypanels.GUIs.capes.CapiumMenu;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.imbuing.CharmImbuingMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
+import net.slommy.slommypanels.GUIs.misc.brad.BradPaisleyRodUpgradeMenu;
 import net.slommy.slommypanels.GUIs.recipes.CraftingTable;
 import net.slommy.slommypanels.GUIs.recipes.RecipeBook;
 import net.slommy.slommypanels.GUIs.recipes.RecipeCreator;
@@ -93,6 +94,10 @@ public class SpOpenCommand implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("capium")) {
             CapiumMenu.openCapiumMenu(player);
+        }
+        if (args[0].equalsIgnoreCase("brad-upgrade")) {
+            BradPaisleyRodUpgradeMenu menu = new BradPaisleyRodUpgradeMenu();
+            menu.openUpgradeMenu(player, player.getInventory().getItemInMainHand());
         }
 
 
