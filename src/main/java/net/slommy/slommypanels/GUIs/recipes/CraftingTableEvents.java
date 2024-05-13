@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class CraftingTableEvents implements Listener {
             if (!validClickableSlots.contains(event.getRawSlot()) && event.getRawSlot() != 24) {
                 // if the slot is in the player's inventory do not cancel it
                 event.setCancelled(true);
-                if (event.getRawSlot() > 5 * 9) event.setCancelled(false);
+                if (event.getRawSlot() >= 5 * 9) event.setCancelled(false);
             }
             if (event.getRawSlot() == 24) {
                 Recipe craftedRecipe = Recipes.getRecipeFromPattern(CraftingTable.getCraftItems(event.getInventory()));
@@ -47,6 +48,22 @@ public class CraftingTableEvents implements Listener {
                             event.getInventory().getItem(CraftingTable.getCraftingSlotFromCoordinates(x, y)).setAmount(event.getInventory().getItem(CraftingTable.getCraftingSlotFromCoordinates(x, y)).getAmount() - craftedRecipe.getRecipeItem(x, y).getAmount());
                         }
                     }
+                }
+            }
+        }
+    }
+    @EventHandler
+    public void onCloseInventory(InventoryCloseEvent event) {
+        if (event.getInventory().getHolder() instanceof CraftingTable) {
+            for (int i = 0; i < 9; i++) {
+                int x = i % 3;
+                int y = i / 3;
+                if (event.getInventory().getItem(CraftingTable.getCraftingSlotFromCoordinates(x, y)) == null) {
+                    continue;
+                }
+                // If the item is not an empty crafting slot, drop it
+                if (event.getInventory().getItem(CraftingTable.getCraftingSlotFromCoordinates(x, y)) != null) {
+                    event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), event.getInventory().getItem(CraftingTable.getCraftingSlotFromCoordinates(x, y)));
                 }
             }
         }
