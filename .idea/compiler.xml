@@ -9,8 +9,5 @@
         <module name="SlommyPanels" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="SlommyPanels" target="9" />
-    </bytecodeTargetLevel>
   </component>
 </project>
