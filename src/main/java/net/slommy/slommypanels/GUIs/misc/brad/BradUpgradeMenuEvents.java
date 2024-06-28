@@ -68,7 +68,7 @@ public class BradUpgradeMenuEvents implements Listener {
                     // Check if the player has the required item in their inventory
                     SlommyItem requiredItem = Items.get("fish/bass_pro");
                     if (!SlommyItemExchange.checkInventory((Player) event.getWhoClicked(), requiredItem, 1)) {
-                        Msg.send((Player) event.getWhoClicked(), "&cYou do not have the required item to upgrade this artifact!");
+                        Msg.send((Player) event.getWhoClicked(), "&cYou do not have the required item to upgrade this rod!");
                         return;
                     }
                     // Remove the required item from the player's inventory
