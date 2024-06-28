@@ -1,6 +1,7 @@
 package net.slommy.slommypanels.GUIs.recipes;
 
 import net.slommy.essentials.SlommyItems.Item;
+import net.slommy.essentials.SlommyItems.ItemUpdateUtils;
 import net.slommy.essentials.SlommyItems.Items;
 import net.slommy.essentials.SlommyItems.SlommyItem;
 import net.slommy.essentials.SlommyItems.recipes.Recipe;
@@ -44,6 +45,9 @@ public class RecipeBook {
             }
         });
         player.openInventory(panel.getInventory());
+        for (int j = 0; j < 6*9; j++) {
+            ItemUpdateUtils.updateItemInContainer(player, j);
+        }
     }
 
     public static void openCategoryMenu(Player player, Item.recipeCategory category, int page) {
@@ -139,6 +143,9 @@ public class RecipeBook {
         // add the icon
         panel.setButton(4, new ItemButton(category.getCategoryItem().build(player)));
         player.openInventory(panel.getInventory());
+        for (int j = 0; i < 6*9; i++) {
+            ItemUpdateUtils.updateItemInContainer(player, i);
+        }
     }
 
     public static void openRecipe(Player player, Recipe recipe, MenuHolder previousMenu, int categoryPage) {
@@ -284,6 +291,9 @@ public class RecipeBook {
         });
         panel.setButton(53, new ItemButton(Items.get("gui/recipe_book_useful_controls").build(player)));
         player.openInventory(panel.getInventory());
+        for (int j = 0; j < 6*9; j++) {
+            ItemUpdateUtils.updateItemInContainer(player, j);
+        }
     }
 
     public static void searchRecipes(Player player, SlommyItem result, MenuHolder previousMenu) {
@@ -388,6 +398,9 @@ public class RecipeBook {
         // add the icon
         panel.setButton(4, new ItemButton(result.build(player)));
         player.openInventory(panel.getInventory());
+        for (int j = 0; i < 6*9; i++) {
+            ItemUpdateUtils.updateItemInContainer(player, i);
+        }
     }
 
     public static void searchForUsages(Player player, SlommyItem ingredient, MenuHolder previousMenu) {
@@ -487,5 +500,8 @@ public class RecipeBook {
         // add the icon
         panel.setButton(4, new ItemButton(ingredient.build(player)));
         player.openInventory(panel.getInventory());
+        for (int j = 0; i < 6*9; i++) {
+            ItemUpdateUtils.updateItemInContainer(player, i);
+        }
     }
 }
