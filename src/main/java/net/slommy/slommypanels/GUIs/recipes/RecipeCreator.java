@@ -1,10 +1,12 @@
 package net.slommy.slommypanels.GUIs.recipes;
 
 import net.slommy.essentials.SlommyItems.Items;
+import net.slommy.essentials.SlommyItems.SlommyItem;
 import net.slommy.essentials.SlommyItems.recipes.Recipe;
 import net.slommy.essentials.SlommyItems.recipes.Recipes;
 import net.slommy.essentials.util.Msg;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -68,9 +70,15 @@ public class RecipeCreator implements InventoryHolder {
                 inventory.setItem(RecipeCreatorEvents.getCraftingSlotFromSlotIndex(i+1), null);
                 continue;
             }
-            ItemStack item = Items.get(recipe.getRecipeItem(x, y).getItemID()).build(player);
-            item.setAmount(recipe.getRecipeItem(x, y).getAmount());
-            inventory.setItem(RecipeCreatorEvents.getCraftingSlotFromSlotIndex(i+1), item);
+            try {
+                ItemStack item = Items.get(recipe.getRecipeItem(x, y).getItemID()).build(player);
+                item.setAmount(recipe.getRecipeItem(x, y).getAmount());
+                inventory.setItem(RecipeCreatorEvents.getCraftingSlotFromSlotIndex(i+1), item);
+            } catch (Exception e) {
+                ItemStack item = new ItemStack(Material.AIR);
+                item.setAmount(recipe.getRecipeItem(x, y).getAmount());
+                inventory.setItem(RecipeCreatorEvents.getCraftingSlotFromSlotIndex(i+1), item);
+            }
         }
 
         if (recipe.getResult() != null) {
