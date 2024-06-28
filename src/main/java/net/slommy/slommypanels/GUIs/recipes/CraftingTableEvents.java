@@ -2,6 +2,7 @@ package net.slommy.slommypanels.GUIs.recipes;
 
 import net.slommy.essentials.SlommyItems.recipes.Recipe;
 import net.slommy.essentials.SlommyItems.recipes.Recipes;
+import net.slommy.essentials.util.Msg;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +23,14 @@ public class CraftingTableEvents implements Listener {
             event.setCancelled(true);
             CraftingTable.openMenu(event.getPlayer());
         }
+        if (event.getClickedBlock().getType() == Material.ANVIL && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            event.setCancelled(true);
+            Msg.send(event.getPlayer(), "&cComing... at some point!");
+        }
+        if (event.getClickedBlock().getType() == Material.ENCHANTING_TABLE && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            event.setCancelled(true);
+            Msg.send(event.getPlayer(), "&cComing... at some point!");
+        }
     }
 
     @EventHandler
@@ -35,7 +44,12 @@ public class CraftingTableEvents implements Listener {
             }
             if (event.getRawSlot() == 24) {
                 Recipe craftedRecipe = Recipes.getRecipeFromPattern(CraftingTable.getCraftItems(event.getInventory()));
+                if (event.getInventory().getItem(24).getType() == Material.STRUCTURE_VOID) {
+                    event.setCancelled(true);
+                    return;
+                }
                 if (craftedRecipe != null) {
+                    event.setCancelled(true);
                     // Remove the items from the crafting table
                     for (int i = 0; i < 9; i++) {
                         int x = i % 3;
@@ -48,6 +62,7 @@ public class CraftingTableEvents implements Listener {
                             event.getInventory().getItem(CraftingTable.getCraftingSlotFromCoordinates(x, y)).setAmount(event.getInventory().getItem(CraftingTable.getCraftingSlotFromCoordinates(x, y)).getAmount() - craftedRecipe.getRecipeItem(x, y).getAmount());
                         }
                     }
+                    event.getWhoClicked().setItemOnCursor(event.getInventory().getItem(24));
                 }
             }
         }
