@@ -3,6 +3,8 @@ package net.slommy.slommypanels.cmds;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.slommy.essentials.PlayerStats.PlayerTrackers;
+import net.slommy.essentials.interfaces.SlommyPlayer;
 import net.slommy.essentials.util.Msg;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
 import net.slommy.slommypanels.GUIs.lootbags.TreasureBag;
@@ -61,6 +63,8 @@ public class AddTreasureBag implements TabExecutor {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.71f);
         }, 10);
         player.sendMessage(msg);
+        PlayerTrackers trackers = new SlommyPlayer(player).getPlayerTrackers();
+        trackers.player_treasure_bags_collected += amount;
         return true;
     }
 
