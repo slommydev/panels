@@ -1,5 +1,6 @@
 package net.slommy.slommypanels.GUIs.recipes;
 
+import net.slommy.essentials.SlommyItems.ItemUpdateUtils;
 import net.slommy.essentials.SlommyItems.Items;
 import net.slommy.essentials.SlommyItems.PersistentDataUtils;
 import net.slommy.essentials.SlommyItems.PersistentItemData;
@@ -41,7 +42,7 @@ public class CraftingTable implements InventoryHolder {
         table.setItem(29, null);
         table.setItem(30, null);
 
-        table.setItem(24, null);
+        table.setItem(24, Items.get("gui/invalid_recipe").build(player));
 
         player.openInventory(table);
 
@@ -61,16 +62,21 @@ public class CraftingTable implements InventoryHolder {
                                 continue;
                             }
                             if (recipe.getRecipeItem(x, y).doCarryOverPersistentData()) {
-                                List<PersistentItemData> data = GetSlommyItem.getPersistentDataValues(Objects.requireNonNull(player.getOpenInventory().getTopInventory().getItem(getCraftingSlotFromCoordinates(x, y))));
+                                ItemStack itemToCarryDataFrom = Objects.requireNonNull(player.getOpenInventory().getTopInventory().getItem(getCraftingSlotFromCoordinates(x, y)));
+                                List<PersistentItemData> data = GetSlommyItem.getPersistentDataValues(itemToCarryDataFrom);
                                 for (PersistentItemData datum : data) {
                                     PersistentDataUtils.addPersistentDataTag(result, datum);
+                                }
+                                if (!Items.get(recipe.getResult().getItemID()).getRarityEnum().allowPlayerRarityBoost() && PersistentDataUtils.getHasRarityBoost(result)) {
+                                    PersistentDataUtils.removeRarityBoost(result);
                                 }
                                 break;
                             }
                         }
                         player.getOpenInventory().getTopInventory().setItem(24, result);
+                        ItemUpdateUtils.updateItemInContainer(player, 24);
                     } else {
-                        player.getOpenInventory().getTopInventory().setItem(24, null);
+                        player.getOpenInventory().getTopInventory().setItem(24, Items.get("gui/invalid_recipe").build(player));
                     }
             } else {
                     this.cancel();
