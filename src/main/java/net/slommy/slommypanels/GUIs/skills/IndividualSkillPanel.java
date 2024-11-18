@@ -40,12 +40,12 @@ public class IndividualSkillPanel {
         if (skill.getLevel() == 0) {
             scrollPosition[0] = 8;
         }
-        if (skill.getLevel() > 94) {
-            scrollPosition[0] = 99;
+        if (skill.getLevel() > skill.getMaxLevel() - 5) {
+            scrollPosition[0] = skill.getMaxLevel();
         }
         int startPosition = scrollPosition[0] - 8;
-        if (scrollPosition[0] > 99) {
-            scrollPosition[0] = 99;
+        if (scrollPosition[0] > skill.getMaxLevel()) {
+            scrollPosition[0] = skill.getMaxLevel();
         }
         for (int i = 0; i < 5*9; i++) {
             ItemButton button = new ItemButton<>(Items.getItems().get("gui/light_blank").build(player));
@@ -63,12 +63,14 @@ public class IndividualSkillPanel {
         };
         panel.setButton(40, backButton);
         ItemStack skillItem = LoadedSkills.getSkill(skill.getInternalName()).getItemIcon().build(player);
+        ItemMeta skillItemMeta = skillItem.getItemMeta();
         if (skill.getLevel() > 0) {
-            panel.getInventory().setMaxStackSize(127);
+            skillItemMeta.setMaxStackSize(99);
+            skillItem.setItemMeta(skillItemMeta);
             skillItem.setAmount(skill.getLevel());
             // set the max stack size to 127 so that the item can be stacked up to 127 times
         }
-        if (skill.getLevel() > 64) {
+        if (skill.getLevel() > 99) {
             // use NMS to get a nms item stack and then set the max stack size to 100
             skillItem.setAmount(skill.getLevel() / 10);
         }
@@ -97,17 +99,17 @@ public class IndividualSkillPanel {
         if (level < 0) {
             return Items.getItems().get("gui/blank_pane").build(player);
         }
-        panelInv.setMaxStackSize(127);
         int stackSize = level;
         if (stackSize == 0) {
             stackSize = 1;
         }
-        if (stackSize > 64) {
+        if (stackSize > 99) {
             stackSize = level / 10;
         }
         if (skill.getLevel() > level) {
             item.setType(Material.LIME_STAINED_GLASS_PANE);
             ItemMeta meta = item.getItemMeta();
+            meta.setMaxStackSize(99);
             meta.displayName(Msg.JSONcolor("&a" + skill.getName() + " Level " + RomanNumeral.convert(level)));
             List<Component> lore = new ArrayList<>();
             addRewardLoreLines(lore, player, skill, level);
@@ -119,10 +121,11 @@ public class IndividualSkillPanel {
         if (skill.getLevel() < level && level != skill.getLevel() + 1) {
             item.setType(Material.RED_STAINED_GLASS_PANE);
             ItemMeta meta = item.getItemMeta();
+            meta.setMaxStackSize(99);
             meta.displayName(Msg.JSONcolor("&c" + skill.getName() + " Level " + RomanNumeral.convert(level)));
             List<Component> lore = new ArrayList<>();
             TextComponent ProgressHeader = Msg.JSONcolor("&7Progress:");
-            TextComponent progressBar = Msg.JSONcolor(ProgressBar.skillBar(level, skill) + "&e " + IntegerTruncator.truncate(skill.getXp()) + "&6/&e" + IntegerCommaParser.parse(Skill.level_required_xp(level)));
+            TextComponent progressBar = Msg.JSONcolor(ProgressBar.skillBar(level, skill) + "&e " + IntegerTruncator.truncate(skill.getXp()) + "&6/&e" + IntegerCommaParser.parse(skill.level_required_xp(level)));
             lore.add(ProgressHeader);
             lore.add(progressBar);
             addRewardLoreLines(lore, player, skill, level);
@@ -134,6 +137,7 @@ public class IndividualSkillPanel {
         if (level == skill.getLevel() + 1) {
             item.setType(Material.YELLOW_STAINED_GLASS_PANE);
             ItemMeta meta = item.getItemMeta();
+            meta.setMaxStackSize(99);
             meta.displayName(Msg.JSONcolor("&e" + skill.getName() + " Level " + RomanNumeral.convert(level)));
             List<Component> lore = new ArrayList<>();
             TextComponent progressToNextLevelLine = Msg.JSONcolor("&7Progress:");
@@ -152,6 +156,7 @@ public class IndividualSkillPanel {
         if (level == skill.getLevel()) {
             item = LoadedSkills.getSkill(skill.getInternalName()).getItemIcon().build(player);
             ItemMeta meta = item.getItemMeta();
+            meta.setMaxStackSize(99);
             meta.displayName(Msg.JSONcolor("&6" + skill.getName() + " Level " + RomanNumeral.convert(level)));
             List<Component> lore = new ArrayList<>();
             TextComponent TotalXP = Msg.JSONcolor("&7Total XP: &e" + IntegerTruncator.truncate(skill.getXp()));
@@ -184,15 +189,15 @@ public class IndividualSkillPanel {
             public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
                 if (event.isLeftClick()) {
                     newScrollPosition[0]++;
-                    if (newScrollPosition[0] > 99) {
-                        newScrollPosition[0] = 99;
+                    if (newScrollPosition[0] > skill.getMaxLevel()) {
+                        newScrollPosition[0] = skill.getMaxLevel();
                     }
                     int startPosition = newScrollPosition[0] - 8;
                     setLevelItems(panel, skill, player, newScrollPosition[0], startPosition);
                 } else if (event.isRightClick()) {
                     newScrollPosition[0] += 10;
-                    if (newScrollPosition[0] > 99) {
-                        newScrollPosition[0] = 99;
+                    if (newScrollPosition[0] > skill.getMaxLevel()) {
+                        newScrollPosition[0] = skill.getMaxLevel();
                     }
                     int startPosition = newScrollPosition[0] - 8;
                     setLevelItems(panel, skill, player, scrollPosition, startPosition);

@@ -1,11 +1,13 @@
 package net.slommy.slommypanels.GUIs.recipes;
 
+import net.kyori.adventure.text.Component;
 import net.slommy.essentials.SlommyItems.Item;
 import net.slommy.essentials.SlommyItems.ItemUpdateUtils;
 import net.slommy.essentials.SlommyItems.Items;
 import net.slommy.essentials.SlommyItems.SlommyItem;
 import net.slommy.essentials.SlommyItems.recipes.Recipe;
 import net.slommy.essentials.SlommyItems.recipes.Recipes;
+import net.slommy.essentials.requirements.Requirement;
 import net.slommy.essentials.util.Msg;
 import net.slommy.slommypanels.SlommyPanels;
 import net.slommy.slommypanels.util.Centerer;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import xyz.janboerman.guilib.api.menu.ItemButton;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
 
@@ -108,12 +111,34 @@ public class RecipeBook {
                 }
                 continue;
             }
-            panel.setButton(i, new ItemButton(Items.get(recipe.getResult().getItemID()).build(player)) {
-                @Override
-                public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
-                    openRecipe(player, recipe, panel, page);
+            boolean meetsRequirements = true;
+            for (Requirement requirement : Items.get(recipe.getResult().getItemID()).getRequirements()) {
+                if (!requirement.check(player)) meetsRequirements = false;
+            }
+            if (meetsRequirements) {
+                panel.setButton(i, new ItemButton(Items.get(recipe.getResult().getItemID()).build(player)) {
+                    @Override
+                    public void onClick(MenuHolder menuHolder, InventoryClickEvent event) {
+                        openRecipe(player, recipe, panel, page);
+                    }
+                });
+            } else {
+                ItemStack item = new ItemStack(Material.GRAY_DYE);
+                ItemMeta meta = item.getItemMeta();
+                List<Component> lore = new ArrayList<>();
+                meta.displayName(Msg.JSONcolor("&7" + Items.get(recipe.getResult().getItemID()).getRawDisplayName() + " &8(locked)"));
+                for (Requirement requirement : Items.get(recipe.getResult().getItemID()).getRequirements()) {
+                    if (!requirement.check(player)) {
+                        lore.add(Msg.JSONcolor("&4✘ &c" + requirement.getLockedMessage()));
+                    } else {
+                        lore.add(Msg.JSONcolor("&2✔ &a" + requirement.getLockedMessage()));
+                    }
                 }
-            });
+                meta.lore(lore);
+                item.setItemMeta(meta);
+                panel.setButton(i, new ItemButton<>(item));
+            }
+
             takenSlots.add(i);
         }
         // add the page buttons

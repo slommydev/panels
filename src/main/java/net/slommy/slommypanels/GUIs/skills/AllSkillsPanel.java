@@ -57,11 +57,14 @@ public class AllSkillsPanel {
             ItemStack item = skill.getItemIcon().build(player);
             PlayerSkills playerSkills = PlayerDataUtil.getPlayerSkills(player);
             Skill playerSkill = playerSkills.getSkill(skill.getInternalName());
+            ItemMeta meta1 = item.getItemMeta();
+            meta1.setMaxStackSize(99);
+            item.setItemMeta(meta1);
             item.setAmount(playerSkill.getLevel());
             if (playerSkill.getLevel() == 0) {
                 item.setAmount(1);
             }
-            if (playerSkill.getLevel() > 64) {
+            if (playerSkill.getLevel() > 99) {
                 item.setAmount(playerSkill.getLevel() / 10);
             }
             List<Component> lore = item.getItemMeta().lore();
@@ -75,7 +78,6 @@ public class AllSkillsPanel {
                 public void onClick(MenuHolder menuHolder, InventoryClickEvent inventoryClickEvent) {
                     MenuHolder<SlommyPanels> panel = IndividualSkillPanel.open(player, skill.getInternalName());
                     Inventory panelInventory = panel.getInventory();
-                    panelInventory.setMaxStackSize(127);
                     player.openInventory(panelInventory);
                 }
             };
@@ -118,12 +120,52 @@ public class AllSkillsPanel {
         lore.add(totalXPComponent);
         meta.lore(lore);
         playerHead.setItemMeta(meta);
-        panel.setButton(4, new ItemButton<>(playerHead));
+        panel.setButton(4, new ItemButton<>(playerHead) {
+            @Override
+            public void onClick(MenuHolder menuHolder, InventoryClickEvent inventoryClickEvent) {
+                    MenuHolder<SlommyPanels> totalSkillPanel = TotalSkillsPanel.open(player);
+                    player.openInventory(totalSkillPanel.getInventory());
+            }
+        });
     }
 
 
     public MenuHolder<SlommyPanels> getPanel() {
         return panel;
+    }
+
+    public static ItemStack getPlayerHeadItem(Player player) {
+        ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
+        // set the player head to the player's skin
+        SkullMeta meta = (SkullMeta) playerHead.getItemMeta();
+        meta.setOwningPlayer(player);
+        TextComponent displayName = Msg.JSONcolor("&6" + player.getName() + "'s Skills");
+        displayName = displayName.decoration(TextDecoration.ITALIC, false);
+        meta.displayName(displayName);
+        List<Component> lore = new ArrayList<>();
+        PlayerSkills playerSkills = PlayerDataUtil.getPlayerSkills(player);
+        int totalSkillLevel = 0;
+        long totalXP = 0;
+        List<Skill> skills = LoadedSkills.getSkills();
+        for (Skill skill : skills) {
+            Skill playerSkill = playerSkills.getSkill(skill.getInternalName());
+            totalSkillLevel += playerSkill.getLevel();
+            totalXP += playerSkill.getXp();
+            TextComponent skillLore = Msg.JSONcolor(skill.getColor() + skill.getIcon() + " " + skill.getName() + ": " + RomanNumeral.convert(playerSkill.getLevel()) + " &7(" + IntegerTruncator.truncate(playerSkill.getXp()) + "&7 xp)");
+            // make it not italics
+            skillLore = skillLore.decoration(TextDecoration.ITALIC, false);
+            lore.add(skillLore);
+        }
+        lore.add(Msg.JSONcolor(""));
+        TextComponent totalLevel = Msg.JSONcolor("&7Total Skill Level: &6" + RomanNumeral.convert(totalSkillLevel) + " &7(" + totalSkillLevel + "&7)");
+        totalLevel = totalLevel.decoration(TextDecoration.ITALIC, false);
+        lore.add(totalLevel);
+        TextComponent totalXPComponent = Msg.JSONcolor("&7Total XP: &e" + IntegerTruncator.truncate(totalXP));
+        totalXPComponent = totalXPComponent.decoration(TextDecoration.ITALIC, false);
+        lore.add(totalXPComponent);
+        meta.lore(lore);
+        playerHead.setItemMeta(meta);
+        return playerHead;
     }
 
 }

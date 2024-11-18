@@ -6,6 +6,8 @@ import net.slommy.slommypanels.GUIs.artifacting.ArtifactMenu;
 import net.slommy.slommypanels.GUIs.artifacting.UpgradeMenu;
 import net.slommy.slommypanels.GUIs.capes.CapiumMenu;
 import net.slommy.slommypanels.GUIs.creative.CreativeMenu;
+import net.slommy.slommypanels.GUIs.endokazosushi.EndoKazosushiMainMenu;
+import net.slommy.slommypanels.GUIs.endokazosushi.EndoKazosushiRequestsMenu;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenu;
 import net.slommy.slommypanels.GUIs.imbuing.CharmImbuingMenu;
 import net.slommy.slommypanels.GUIs.lootbags.GlobalLootbagManagers;
@@ -102,6 +104,12 @@ public class SpOpenCommand implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("creative")) {
             CreativeMenu.openCategoryMenu(player, 1);
+        }
+        if (args[0].equalsIgnoreCase("endorequests")) {
+            EndoKazosushiRequestsMenu.openRequestsMenu(player);
+        }
+        if (args[0].equalsIgnoreCase("endo")) {
+            EndoKazosushiMainMenu.openMainMenu(player);
         }
 
 
