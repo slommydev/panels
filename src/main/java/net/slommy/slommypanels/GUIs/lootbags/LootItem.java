@@ -8,10 +8,14 @@ public class LootItem {
     private SlommyItem slommyItem;
     private int amount;
     private String id;
-    public LootItem(SlommyItem slommyItem, int amount, String id) {
+    private String enchantmentID;
+    private int enchantmentLevel;
+    public LootItem(SlommyItem slommyItem, int amount, String id, String enchantmentID, int enchantmentLevel) {
         this.slommyItem = slommyItem;
         this.amount = amount;
         this.id = id;
+        this.enchantmentID = enchantmentID;
+        this.enchantmentLevel = enchantmentLevel;
     }
 
     public SlommyItem getSlommyItem() {
@@ -29,4 +33,8 @@ public class LootItem {
     public String getId() {
         return id;
     }
+
+    public String getEnchantmentID() { return enchantmentID; }
+
+    public int getEnchantmentLevel() { return enchantmentLevel; }
 }

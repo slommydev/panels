@@ -12,7 +12,7 @@
     <name>SlommyPanels</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -21,10 +21,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <release>25</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -83,7 +82,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <version>26.2.build.129-stable</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -92,12 +91,18 @@
             <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
-        <!--Spigot API and NMS -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <groupId>net.slommy</groupId>
+            <artifactId>essentials</artifactId>
+            <version>[0.0.0.0,)</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>xyz.janboerman.guilib</groupId>
+            <artifactId>guilib</artifactId>
+            <version>1.12.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/GuiLib-Plugin-1.12.4.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

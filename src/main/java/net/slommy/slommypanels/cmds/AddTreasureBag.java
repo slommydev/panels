@@ -42,8 +42,8 @@ public class AddTreasureBag implements TabExecutor {
         stash.giveBag(bag, amount);
         Msg.send(player, "&7+" + amount + " " + bag.getItem().getDisplayName() + "&7!");
         TextComponent msg = Msg.JSONcolor("&7Check your &6/stash&7! &8(or click this message)");
-        msg = msg.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/stash"));
-        msg = msg.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Msg.JSONcolor("&7Click to open your stash!")));
+        msg = msg.clickEvent(ClickEvent.runCommand("/stash"));
+        msg = msg.hoverEvent( HoverEvent.showText(Msg.JSONcolor("&7Click to open your stash!")));
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.84f);
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1.12f);
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.56f);

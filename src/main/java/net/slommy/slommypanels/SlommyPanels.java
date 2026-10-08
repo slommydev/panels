@@ -7,6 +7,7 @@ import net.slommy.slommypanels.GUIs.artifacting.IdentificationMenu;
 import net.slommy.slommypanels.GUIs.artifacting.events.IdentificationMenuEventManagers;
 import net.slommy.slommypanels.GUIs.artifacting.events.UpgradeMenuEventManagers;
 import net.slommy.slommypanels.GUIs.capes.CapeSelectionClickEvents;
+import net.slommy.slommypanels.GUIs.enchant.EnchantmentMenuClickEvents;
 import net.slommy.slommypanels.GUIs.enrichment.EnrichmentMenuClickEvents;
 import net.slommy.slommypanels.GUIs.imbuing.CharmImbuingMenuClickEvents;
 import net.slommy.slommypanels.GUIs.lootbags.*;
@@ -56,6 +57,7 @@ public final class SlommyPanels extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CapeSelectionClickEvents(), this);
         getServer().getPluginManager().registerEvents(new BradUpgradeMenuEvents(), this);
         getServer().getPluginManager().registerEvents(new CraftingTableEvents(), this);
+        getServer().getPluginManager().registerEvents(new EnchantmentMenuClickEvents(), this);
 
         this.guiLibrary = guiLibrary;
         LootTableLoader.loadLootTables();

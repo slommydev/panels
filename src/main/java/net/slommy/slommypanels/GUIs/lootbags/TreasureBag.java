@@ -1,12 +1,20 @@
 package net.slommy.slommypanels.GUIs.lootbags;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.slommy.essentials.SlommyItems.ItemUpdateUtils;
 import net.slommy.essentials.SlommyItems.Items;
+import net.slommy.essentials.SlommyItems.PersistentDataUtils;
 import net.slommy.essentials.SlommyItems.SlommyItem;
+import net.slommy.essentials.SlommyItems.enchantments.SlommyEnchantment;
+import net.slommy.essentials.SlommyItems.enchantments.util.EnchantmentRegister;
 import net.slommy.essentials.util.Msg;
+import net.slommy.essentials.util.RomanNumeral;
 import net.slommy.slommypanels.SlommyPanels;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -86,12 +94,28 @@ public class TreasureBag implements InventoryHolder {
                 // broadcast to server
                 LootTable.Rarity rarity = LootTable.Rarity.getRarityByChance(lootTable.getChance(drop));
                 List<Player> onlinePlayers = new ArrayList<>(SlommyPanels.getInstance().getServer().getOnlinePlayers());
-                for (Player onlinePlayer : onlinePlayers) {
-                    Msg.send(onlinePlayer, LootTable.Rarity.getRarityString(rarity) + "! &b" + player.getName() + " &ejust got a &d" + drop.getSlommyItem().getDisplayName() + "&e from a " + item.getDisplayName() + "&e!");
+                if (EnchantmentRegister.getEnchantmentIDs().contains(drop.getEnchantmentID()) && drop.getSlommyItem().getItemID().equalsIgnoreCase("items/enchantment_tome")) {
+                    SlommyEnchantment ench = EnchantmentRegister.getEnchant(drop.getEnchantmentID());
+                    String simulatedItemName = ench.Rarity().color() + "Enchantment Tome &7(" + ench.Name() + "&7)";
+                    for (Player onlinePlayer : onlinePlayers) {
+                        Msg.sendJSON(onlinePlayer, LootTable.Rarity.getRarityString(rarity) + "! &b" + player.getName() + " &ejust got a &d" + simulatedItemName + "&e from a " + item.getDisplayName() + "&e!");
+                    }
+                } else {
+                    for (Player onlinePlayer : onlinePlayers) {
+                        Msg.sendJSON(onlinePlayer, LootTable.Rarity.getRarityString(rarity) + "! &b" + player.getName() + " &ejust got a &d" + drop.getSlommyItem().getDisplayName() + "&e from a " + item.getDisplayName() + "&e!");
+                    }
                 }
             }
             try {
                 ItemStack itemStack = drop.getSlommyItem().build(player);
+                if (!drop.getEnchantmentID().equalsIgnoreCase("")) {
+                    if (EnchantmentRegister.getEnchantmentIDs().contains(drop.getEnchantmentID())) {
+                        SlommyEnchantment enchantment = EnchantmentRegister.getEnchant(drop.getEnchantmentID());
+                        enchantment.apply(itemStack, drop.getEnchantmentLevel(), false);
+                    } else {
+                        Msg.debugBroadcast(drop.getEnchantmentID() + " is not found in enchantment registry");
+                    }
+                }
                 itemStack.setAmount(drop.getAmount());
                 inventory.setItem(slot, itemStack);
                 takenSlots.add(slot);
@@ -155,6 +179,9 @@ public class TreasureBag implements InventoryHolder {
         }
         player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 1, 2f);
         player.openInventory(inventory);
+        for (int i = 0; i < 27; i++) {
+            ItemUpdateUtils.updateItemInContainer(player, i);
+        }
     }
 
     public LockPicker getLockPicker() {
@@ -273,6 +300,15 @@ public class TreasureBag implements InventoryHolder {
             ItemStack itemStack = item.getSlommyItem().build(player);
             ItemMeta meta = itemStack.getItemMeta();
             List<Component> lore = new ArrayList<>();
+            if (!item.getEnchantmentID().equalsIgnoreCase("")) {
+                if (EnchantmentRegister.getEnchantmentIDs().contains(item.getEnchantmentID())) {
+                    lore.add(Msg.JSONcolor("&9" + EnchantmentRegister.getEnchant(item.getEnchantmentID()).Name() + " " +  RomanNumeral.convert(item.getEnchantmentLevel())));
+                    if (item.getSlommyItem().getItemID().equalsIgnoreCase("enchantment_tome")) {
+                        String itemNamePlainText = PlainTextComponentSerializer.plainText().serialize(meta.displayName());
+                        meta.displayName(Msg.JSONcolor(EnchantmentRegister.getEnchant(item.getEnchantmentID()).Rarity().color() + itemNamePlainText));
+                    }
+                }
+            }
             if (lootTable.getMainDrops().containsKey(item)) {
                 lore.add(Msg.JSONcolor("&7Main Drop"));
             } else {

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SlommyPanels.iml" filepath="$PROJECT_DIR$/SlommyPanels.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../SlommyEssentials/target/target.iml" filepath="$PROJECT_DIR$/../SlommyEssentials/target/target.iml" />
     </modules>
   </component>
 </project>
