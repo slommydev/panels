@@ -3,6 +3,7 @@ package net.slommy.slommypanels.GUIs.recipes;
 import net.slommy.essentials.SlommyItems.recipes.Recipe;
 import net.slommy.essentials.SlommyItems.recipes.Recipes;
 import net.slommy.essentials.util.Msg;
+import net.slommy.slommypanels.GUIs.enchant.EnchantmentTableMenu;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +30,8 @@ public class CraftingTableEvents implements Listener {
         }
         if (event.getClickedBlock().getType() == Material.ENCHANTING_TABLE && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             event.setCancelled(true);
-            Msg.send(event.getPlayer(), "&cComing... at some point!");
+            EnchantmentTableMenu tableMenu = new EnchantmentTableMenu(event.getPlayer());
+            tableMenu.openEnchantmentTableMenu();
         }
     }
 
