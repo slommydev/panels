@@ -6,6 +6,7 @@ import net.slommy.essentials.SlommyItems.SlommyItem;
 import net.slommy.essentials.util.GetSlommyItem;
 import net.slommy.essentials.util.Msg;
 import net.slommy.slommypanels.SlommyPanels;
+import net.slommy.slommypanels.util.CommonButtons;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -50,6 +51,7 @@ public class EnchantmentSlotSelectionMenu implements InventoryHolder {
                 takenSlots.add(i);
             }
         }
+        inv.setItem(49, CommonButtons.backButton(player).getIcon());
     }
 
     private void populateEnchantableItems(Inventory inv, List<Integer> takenSlots) {

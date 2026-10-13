@@ -89,6 +89,10 @@ public class EnchantmentMenuClickEvents implements Listener {
         SlommyItem clickedSlommyItem = Items.get(GetSlommyItem.getFromItemTag(clickedItemStack));
 
         if (clickedSlommyItem.getItemID().contains("blank")) return;
+        if (clickedSlommyItem.getItemID().equalsIgnoreCase("gui/back")) {
+            slotSelectionMenu.getTableMenu().openEnchantmentTableMenu();
+        }
+        if (clickedSlommyItem.getItemID().contains("gui/")) return; // Do not allow ANY items beginning with category gui to be put into the menu
 
 
         slotSelectionMenu.getEnchantmentSlot().setItem(clickedItemStack);
